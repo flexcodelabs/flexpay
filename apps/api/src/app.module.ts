@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { apiEntities } from './entities';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { apiEntities } from './entities';
         RABBIT_MQ_MPESA_QUEUE: Joi.string().required(),
       }),
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_FILTER, useClass: HttpErrorFilter }],

@@ -9,7 +9,7 @@ export class UserService {
     @InjectRepository(User) private readonly repository: Repository<User>,
   ) {}
 
-  createUser = async (
+  register = async (
     user: User,
     relations: string[],
     select: FindOptionsSelect<User>,
