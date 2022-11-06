@@ -1,14 +1,20 @@
-import { HttpErrorFilter } from '@flexpay/common';
+import { dbConfig, HttpErrorFilter } from '@flexpay/common';
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
-import { FlexTypeormModule } from '../../../libs/common/src/typeorm/typeorm.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { apiEntities } from './entities';
 
 @Module({
   imports: [
-    FlexTypeormModule,
+    TypeOrmModule.forRoot({
+      name: 'default',
+      type: 'postgres',
+      ...dbConfig,
+      entities: apiEntities,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({

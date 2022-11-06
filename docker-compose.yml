@@ -14,41 +14,19 @@ services:
     ports:
       - '2000:1000'
 
-  # billing:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/billing/Dockerfile
-  #     target: development
-  #   command: npm run start:dev billing
-  #   env_file:
-  #     - ./apps/billing/.env
-  #   depends_on:
-  #     - mongodb-primary
-  #     - mongodb-secondary
-  #     - mongodb-arbiter
-  #     - rabbitmq
-  #     - auth
-  #   volumes:
-  #     - .:/home/app
-  #     - /home/app/node_modules
-  # auth:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/auth/Dockerfile
-  #     target: development
-  #   command: npm run start:dev auth
-  #   ports:
-  #     - '3001:3001'
-  #   env_file:
-  #     - ./apps/auth/.env
-  #   depends_on:
-  #     - mongodb-primary
-  #     - mongodb-secondary
-  #     - mongodb-arbiter
-  #     - rabbitmq
-  #   volumes:
-  #     - .:/home/app
-  #     - /home/app/node_modules
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: npm run start:dev auth
+
+    env_file:
+      - ./apps/api/.env
+    volumes:
+      - .:/home/app
+    ports:
+      - '2001:1000'
 
 networks:
   default:
