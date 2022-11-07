@@ -10,12 +10,12 @@ export class UserService {
     @InjectRepository(User) private readonly repository: Repository<User>,
   ) {}
 
-  register = async (user: User, select: any): Promise<User> => {
+  register = async (user: User, query: any): Promise<User> => {
     const newUser = await this.repository.save(user);
     return await this.repository.findOne({
       where: { id: newUser.id },
       relations: [],
-      select,
+      select: select(query.fields, this.repository.metadata),
     });
   };
 
