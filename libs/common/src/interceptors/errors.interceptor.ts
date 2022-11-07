@@ -25,6 +25,16 @@ export class HttpErrorFilter implements ExceptionFilter {
     message = message.split('(').join('');
     message = message.split(')').join('');
     message = message.split('=').join(' ');
+
+    message = this.sanitizeMessage(message);
+    Logger.error(message, `${request?.method} ${request?.url}`, 'Exception');
+    if (response) {
+      return response.status(HttpStatus.BAD_REQUEST).send({ error: message });
+    }
+    return new Error(message);
+  }
+
+  sanitizeMessage = (message: string) => {
     if (
       message.includes('Cannot POST') ||
       message.includes('Cannot GET') ||
@@ -33,11 +43,13 @@ export class HttpErrorFilter implements ExceptionFilter {
       message.includes('Cannot PUT')
     ) {
       message = 'Oops 😢! Route not available.';
+    } else {
+      message = message.includes(
+        'Could not find any entity of type "User" matching',
+      )
+        ? 'User not found'
+        : message;
     }
-    Logger.error(message, `${request?.method} ${request?.url}`, 'Exception');
-    if (response) {
-      return response.status(HttpStatus.NOT_FOUND).send({ error: message });
-    }
-    return new Error(message);
-  }
+    return message;
+  };
 }

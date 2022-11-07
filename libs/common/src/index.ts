@@ -4,3 +4,5 @@ export * from './interceptors/errors.interceptor';
 export * from './interceptors/logging.interceptor';
 export * from './system/system.configuration';
 export * from './rmq/rmq.service';
+export * from './entities/user.entity';
+export * from './helpers/repository.helper';

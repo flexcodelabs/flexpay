@@ -1,7 +1,8 @@
+import { User } from '@flexpay/common';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsSelect, Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { Repository } from 'typeorm';
+import { select } from '@flexpay/common';
 
 @Injectable()
 export class UserService {
@@ -9,16 +10,26 @@ export class UserService {
     @InjectRepository(User) private readonly repository: Repository<User>,
   ) {}
 
-  register = async (
-    user: User,
-    relations: string[],
-    select: FindOptionsSelect<User>,
-  ): Promise<User> => {
+  register = async (user: User, select: any): Promise<User> => {
     const newUser = await this.repository.save(user);
     return await this.repository.findOne({
       where: { id: newUser.id },
-      relations,
+      relations: [],
       select,
+    });
+  };
+
+  getUsers = async (query: any): Promise<User[]> => {
+    return await this.repository.find({
+      relations: [],
+      select: select(query.fields, this.repository.metadata),
+    });
+  };
+  getUser = async (id: string, query: any): Promise<User> => {
+    return await this.repository.findOneOrFail({
+      where: { id: id },
+      relations: [],
+      select: select(query.fields, this.repository.metadata),
     });
   };
 }
