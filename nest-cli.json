@@ -44,6 +44,51 @@
       "compilerOptions": {
         "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
+    },
+    "tigopesa": {
+      "type": "application",
+      "root": "apps/tigopesa",
+      "entryFile": "main",
+      "sourceRoot": "apps/tigopesa/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/tigopesa/tsconfig.app.json"
+      }
+    },
+    "airtel": {
+      "type": "application",
+      "root": "apps/airtel",
+      "entryFile": "main",
+      "sourceRoot": "apps/airtel/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/airtel/tsconfig.app.json"
+      }
+    },
+    "azampay": {
+      "type": "application",
+      "root": "apps/azampay",
+      "entryFile": "main",
+      "sourceRoot": "apps/azampay/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/azampay/tsconfig.app.json"
+      }
+    },
+    "dpo": {
+      "type": "application",
+      "root": "apps/dpo",
+      "entryFile": "main",
+      "sourceRoot": "apps/dpo/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/dpo/tsconfig.app.json"
+      }
+    },
+    "t-pay": {
+      "type": "application",
+      "root": "apps/t-pay",
+      "entryFile": "main",
+      "sourceRoot": "apps/t-pay/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/t-pay/tsconfig.app.json"
+      }
     }
   }
 }
