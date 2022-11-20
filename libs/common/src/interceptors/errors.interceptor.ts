@@ -12,16 +12,21 @@ export class HttpErrorFilter implements ExceptionFilter {
     const context = host.switchToHttp();
     const request = context.getRequest();
     const response = context.getResponse();
-    let message: string;
-    const detail = exception.detail;
-    if (typeof detail === 'string' && detail?.includes('already exists')) {
-      message = exception.table.split('_').join(' ') + ' with';
-      message = exception.detail.replace('Key', message);
+    let message = '';
+    if (typeof exception === 'string') {
+      message = exception;
     } else {
-      message = exception?.message?.includes('Bad Request Exception')
-        ? exception?.response?.message?.join(',')
-        : exception?.message || exception?.error;
+      const detail = exception.detail;
+      if (typeof detail === 'string' && detail?.includes('already exists')) {
+        message = exception.table.split('_').join(' ') + ' with';
+        message = exception.detail.replace('Key', message);
+      } else {
+        message = exception?.message?.includes('Bad Request Exception')
+          ? exception?.response?.message?.join(',')
+          : exception?.message || exception?.error;
+      }
     }
+
     message = message.split('(').join('');
     message = message.split(')').join('');
     message = message.split('=').join(' ');

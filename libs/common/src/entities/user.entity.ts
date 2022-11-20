@@ -24,7 +24,7 @@ export class User extends BaseEntity {
   @Column()
   surname: string;
 
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column({ unique: true })
@@ -35,4 +35,6 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn({ name: 'lastupdated' })
   lastUpdated: Date;
+
+  status?: number;
 }
