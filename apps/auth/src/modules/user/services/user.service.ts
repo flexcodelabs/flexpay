@@ -4,9 +4,10 @@ import {
   GetUsersRequestInterface,
   GetUsersResponseInterface,
   RegisterMSDTO,
+  sanitizeResponse,
   User,
 } from '@flexpay/common';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { select } from '@flexpay/common';
@@ -51,5 +52,29 @@ export class UserService {
       where: { id: id },
       select: select(query.fields, this.repository.metadata),
     });
+  };
+
+  async login(userLoginInfor: any, fields: any[]): Promise<any> {
+    const user: User = await User.verifyUser(
+      userLoginInfor.username,
+      userLoginInfor.password,
+    );
+    this.checkUserActiveStatus(user);
+    const userWithFields = await this.repository.findOne({
+      where: { id: user.id },
+      relations: fields,
+    });
+    return sanitizeResponse(userWithFields);
+  }
+
+  checkUserActiveStatus = (user: User) => {
+    if (!user.enabled || !user.verified) {
+      throw new NotAcceptableException(
+        !user.enabled
+          ? 'Your account has been disabled'
+          : 'Your account is not verified',
+      );
+    }
+    return;
   };
 }

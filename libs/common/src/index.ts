@@ -11,4 +11,4 @@ export * from './constants/core.constants';
 export * from './dto/register.dto';
 export * from './interfaces/shared.interface';
 export * from './interfaces/user.interface';
-export * from './helpers/error.sanitizer';
+export * from './helpers/sanitizer.helper';
