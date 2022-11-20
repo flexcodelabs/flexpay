@@ -1,20 +1,48 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  ErrorResponse,
+  GetUsersRequestInterface,
+  GetUsersResponseInterface,
+  RegisterMSDTO,
+  RmqService,
+  User,
+} from '@flexpay/common';
+import { Controller } from '@nestjs/common';
+import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { UserService } from '../services/user.service';
 
 @Controller()
 export class UserController {
-  constructor(private readonly service: UserService) {}
+  constructor(
+    private readonly service: UserService,
+    private rmqService: RmqService,
+  ) {}
 
-  @Post('api/users')
-  createUsers(@Body() payload: any, @Query() query: any) {
-    return this.service.register(payload, query);
+  @EventPattern('register')
+  async register(
+    @Payload() payload: RegisterMSDTO,
+    @Ctx() context: RmqContext,
+  ): Promise<User | ErrorResponse> {
+    const user = await this.service.register(payload);
+    this.rmqService.ack(context);
+    return user;
   }
-  @Get('api/users')
-  async getUsers(@Query() query: any) {
-    return await this.service.getUsers(query);
+
+  @EventPattern('getUsers')
+  async getUsers(
+    @Payload() payload: GetUsersRequestInterface,
+    @Ctx() context: RmqContext,
+  ): Promise<GetUsersResponseInterface | ErrorResponse> {
+    const user = await this.service.getUsers(payload);
+    this.rmqService.ack(context);
+    return user;
   }
-  @Get('api/users/:id')
-  async getUser(@Param('id') id: string, @Query() query: any) {
-    return await this.service.getUser(id, query);
+  @EventPattern('getUser')
+  async getUser(
+    @Payload() payload: GetUsersRequestInterface,
+    @Ctx() context: RmqContext,
+  ): Promise<GetUsersResponseInterface | ErrorResponse> {
+    const user = await this.service.getUsers(payload);
+    this.rmqService.ack(context);
+    return user;
   }
 }

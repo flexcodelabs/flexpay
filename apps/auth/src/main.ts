@@ -1,7 +1,10 @@
+import {
+  HttpErrorFilter,
+  LoggingInterceptor,
+  RmqService,
+} from '@flexpay/common';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { HttpErrorFilter } from '@flexpay/common';
-import { LoggingInterceptor } from '@flexpay/common';
 import { AuthModule } from './auth.module';
 
 async function bootstrap() {
@@ -9,8 +12,9 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalFilters(new HttpErrorFilter());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  Logger.debug(`AUTH listening on port: ${port}`, 'AUTH');
+  const rmqService = app.get<RmqService>(RmqService);
+  app.connectMicroservice(rmqService.getOptions('AUTH'));
+  await app.startAllMicroservices();
+  Logger.debug(`Auth Microservice is UP`, 'AUTH');
 }
 bootstrap();

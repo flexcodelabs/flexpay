@@ -1,5 +1,12 @@
-import { User } from '@flexpay/common';
-import { Injectable } from '@nestjs/common';
+import {
+  ErrorResponse,
+  errorSanitizer,
+  GetUsersRequestInterface,
+  GetUsersResponseInterface,
+  RegisterMSDTO,
+  User,
+} from '@flexpay/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { select } from '@flexpay/common';
@@ -10,25 +17,37 @@ export class UserService {
     @InjectRepository(User) private readonly repository: Repository<User>,
   ) {}
 
-  register = async (user: User, query: any): Promise<User> => {
-    const newUser = await this.repository.save(user);
-    return await this.repository.findOne({
-      where: { id: newUser.id },
-      relations: [],
-      select: select(query.fields, this.repository.metadata),
-    });
+  register = async (payload: RegisterMSDTO): Promise<User | ErrorResponse> => {
+    try {
+      const newUser = await this.repository.save(payload.data);
+      return await this.repository.findOne({
+        where: { id: newUser.id },
+        select: payload.rest
+          ? select(payload.fields, this.repository.metadata)
+          : null,
+      });
+    } catch (e) {
+      return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
+    }
+  };
+  getUsers = async (
+    payload: GetUsersRequestInterface,
+  ): Promise<GetUsersResponseInterface | ErrorResponse> => {
+    try {
+      const users = await this.repository.find({
+        select: payload.rest
+          ? select(payload.fields, this.repository.metadata)
+          : null,
+      });
+      return { users };
+    } catch (e) {
+      return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
+    }
   };
 
-  getUsers = async (query: any): Promise<User[]> => {
-    return await this.repository.find({
-      relations: [],
-      select: select(query.fields, this.repository.metadata),
-    });
-  };
   getUser = async (id: string, query: any): Promise<User> => {
     return await this.repository.findOneOrFail({
       where: { id: id },
-      relations: [],
       select: select(query.fields, this.repository.metadata),
     });
   };
