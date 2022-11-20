@@ -1,3 +1,8 @@
+const sanitizeNullError = (message: string) => {
+  const column = message.split('"');
+  return `${column[1]} can not be null`;
+};
+
 const sanitizeMessage = (message: string) => {
   if (
     message.includes('Cannot POST') ||
@@ -12,6 +17,8 @@ const sanitizeMessage = (message: string) => {
       'Could not find any entity of type "User" matching',
     )
       ? 'User not found'
+      : message.includes('null value in column')
+      ? sanitizeNullError(message)
       : message;
   }
   return message;

@@ -49,6 +49,6 @@ export class UserController {
 
   @Get('api/users/:id')
   async getUser(@Param('id') id: string, @Query() query: any) {
-    return await this.service.getUser(id, query);
+    return await this.service.getUser({ id, fields: query.fields, rest: true });
   }
 }

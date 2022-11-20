@@ -1,5 +1,7 @@
 FROM node:alpine As development
 
+RUN apk --no-cache add --virtual python3
+
 WORKDIR /home/app
 
 COPY package*.json ./

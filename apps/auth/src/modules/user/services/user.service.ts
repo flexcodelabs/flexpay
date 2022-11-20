@@ -19,7 +19,8 @@ export class UserService {
 
   register = async (payload: RegisterMSDTO): Promise<User | ErrorResponse> => {
     try {
-      const newUser = await this.repository.save(payload.data);
+      const user = this.repository.create(payload.data);
+      const newUser = await this.repository.save(user);
       return await this.repository.findOne({
         where: { id: newUser.id },
         select: payload.rest

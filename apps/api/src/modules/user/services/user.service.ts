@@ -13,30 +13,17 @@ import { lastValueFrom } from 'rxjs';
 export class UserService {
   constructor(@Inject(AUTH_SERVICE) private authClient: ClientProxy) {}
 
-  register = async (data: RegisterMSDTO): Promise<User | ErrorResponse> => {
-    return await lastValueFrom(
-      this.authClient.send('register', {
-        ...data,
-      }),
-    );
+  register = async (payload: RegisterMSDTO): Promise<User | ErrorResponse> => {
+    return await lastValueFrom(this.authClient.send('register', payload));
   };
 
   getUsers = async (
-    fields: any,
+    payload: any,
   ): Promise<GetUsersResponseInterface | ErrorResponse> => {
-    return await lastValueFrom(
-      this.authClient.send('getUsers', {
-        ...fields,
-      }),
-    );
+    return await lastValueFrom(this.authClient.send('getUsers', payload));
   };
 
-  getUser = async (id: string, fields: any[]): Promise<User> => {
-    return await lastValueFrom(
-      this.authClient.send('getUsers', {
-        id,
-        fields,
-      }),
-    );
+  getUser = async (payload: any): Promise<User> => {
+    return await lastValueFrom(this.authClient.send('getUser', payload));
   };
 }

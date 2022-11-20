@@ -39,6 +39,11 @@ export class HttpErrorFilter implements ExceptionFilter {
     return new Error(message);
   }
 
+  sanitizeNullError = (message: string) => {
+    const column = message.split('null value in column');
+    return `${column[0]?.split(' ')[0]} can not be null`;
+  };
+
   sanitizeMessage = (message: string) => {
     if (
       message.includes('Cannot POST') ||
@@ -53,6 +58,8 @@ export class HttpErrorFilter implements ExceptionFilter {
         'Could not find any entity of type "User" matching',
       )
         ? 'User not found'
+        : message.includes('null value in column')
+        ? this.sanitizeNullError(message)
         : message;
     }
     return message;
