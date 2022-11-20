@@ -30,6 +30,12 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   username: string;
 
+  @Column({ nullable: false, default: 'FALSE' })
+  enabled: boolean;
+
+  @Column({ nullable: false, default: 'FALSE' })
+  verified: boolean;
+
   @Column({ unique: true })
   email: string;
 
