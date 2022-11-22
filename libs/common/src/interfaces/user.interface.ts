@@ -11,3 +11,7 @@ export interface GetUsersRequestInterface {
   page: number;
   pageSize: number;
 }
+export interface LoginInterface {
+  username: string;
+  password: string;
+}

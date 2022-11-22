@@ -2,6 +2,7 @@ import {
   ErrorResponse,
   GetUsersRequestInterface,
   GetUsersResponseInterface,
+  LoginInterface,
   RegisterMSDTO,
   RmqService,
   User,
@@ -42,6 +43,16 @@ export class UserController {
     @Ctx() context: RmqContext,
   ): Promise<GetUsersResponseInterface | ErrorResponse> {
     const user = await this.service.getUsers(payload);
+    this.rmqService.ack(context);
+    return user;
+  }
+
+  @EventPattern('login')
+  async login(
+    @Payload() payload: LoginInterface,
+    @Ctx() context: RmqContext,
+  ): Promise<GetUsersResponseInterface | ErrorResponse> {
+    const user = await this.service.login(payload, []);
     this.rmqService.ack(context);
     return user;
   }

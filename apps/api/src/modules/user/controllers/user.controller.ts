@@ -1,8 +1,10 @@
 import {
   ErrorResponse,
   GetUsersResponseInterface,
+  SessionGuard,
   User,
 } from '@flexpay/common';
+
 import {
   Body,
   Controller,
@@ -12,6 +14,7 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 
@@ -33,6 +36,7 @@ export class UserController {
     return res.status(user.status || HttpStatus.OK).send(user);
   }
 
+  @UseGuards(SessionGuard)
   @Get('api/users')
   async getUsers(
     @Query() query: any,

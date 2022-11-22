@@ -1,3 +1,3 @@
-import { User } from '../../../libs/common/src/entities/user.entity';
+import { User } from '@flexpay/common';
 
 export const authEntities = [User];

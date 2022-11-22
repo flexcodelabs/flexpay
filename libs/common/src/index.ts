@@ -12,3 +12,4 @@ export * from './dto/register.dto';
 export * from './interfaces/shared.interface';
 export * from './interfaces/user.interface';
 export * from './helpers/sanitizer.helper';
+export * from './auth/session.guard';
