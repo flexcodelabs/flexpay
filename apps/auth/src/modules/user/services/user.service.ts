@@ -51,6 +51,7 @@ export class UserService {
     if (user.status) {
       return user;
     }
+    delete payload.data.password;
     await this.repository.save(payload.data);
     return await this.getUser({ ...payload, id: payload.data.id });
   };
@@ -73,7 +74,9 @@ export class UserService {
     try {
       return await this.repository.findOneOrFail({
         where: { id: payload.id },
-        select: select(payload.fields, this.repository.metadata),
+        select: payload.rest
+          ? select(payload.fields, this.repository.metadata)
+          : null,
       });
     } catch (e) {
       return { error: e.message, status: 400 };
