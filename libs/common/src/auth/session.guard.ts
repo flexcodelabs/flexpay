@@ -18,8 +18,6 @@ export class SessionGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const httpContext = context.switchToHttp();
     const request = httpContext.getRequest();
-    const response = httpContext.getResponse();
-
     try {
       if (request.session && request.session.user) {
         request.session.previousPath = request.path;
@@ -44,10 +42,10 @@ export class SessionGuard implements CanActivate {
         request.session.user = user;
         return true;
       }
-      return response.redirect(302, '');
+      throw false;
     } catch (e) {
       Logger.error(e.message);
-      return response.redirect(302, '');
+      return false;
     }
   }
 
