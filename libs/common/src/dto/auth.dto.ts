@@ -26,7 +26,28 @@ export class RegisterMSDTO {
 
   @IsArray()
   @IsNotEmpty()
-  fields: string[];
+  fields?: string[];
+
+  rest?: boolean;
+}
+export class UpdateUserMSDTO {
+  @IsNotEmpty()
+  data: User;
+
+  @IsArray()
+  @IsNotEmpty()
+  fields?: string[];
+
+  rest?: boolean;
+}
+
+export class GetUserDTO {
+  @IsNotEmpty()
+  id: string;
+
+  @IsArray()
+  @IsNotEmpty()
+  fields?: string | string[];
 
   rest?: boolean;
 }
