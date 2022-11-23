@@ -1,3 +1,3 @@
-import { User } from '@flexpay/common';
+import { ApiKey, User } from '@flexpay/common';
 
-export const authEntities = [User];
+export const authEntities = [User, ApiKey];
