@@ -53,7 +53,7 @@ export const errorSanitizer = (error: {
   return message;
 };
 
-export const sanitizeResponse: any = (responseObject: any) => {
+const sanitizeObject = (responseObject: any) => {
   const omit = (
     responseObject: { [x: string]: any },
     responseObjectProps: any[],
@@ -92,4 +92,11 @@ export const sanitizeResponse: any = (responseObject: any) => {
   });
 
   return newResponseObject;
+};
+
+export const sanitizeResponse: any = (responseObject: any) => {
+  if (Array.isArray(responseObject)) {
+    return responseObject.map((response) => sanitizeObject(response));
+  }
+  return sanitizeObject(responseObject);
 };
