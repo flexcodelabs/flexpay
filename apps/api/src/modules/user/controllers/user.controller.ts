@@ -9,10 +9,11 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Param,
   Post,
+  Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -28,12 +29,14 @@ export class UserController {
     @Query() query: any,
     @Res() res: any,
   ): Promise<User | ErrorResponse> {
-    const user = await this.service.register({
-      data,
-      fields: query.fields,
-      rest: true,
-    });
-    return res.status(user.status || HttpStatus.OK).send(user);
+    return await this.service.register(
+      {
+        data,
+        fields: query.fields,
+        rest: true,
+      },
+      res,
+    );
   }
 
   @UseGuards(SessionGuard)
@@ -42,17 +45,43 @@ export class UserController {
     @Query() query: any,
     @Res() res: any,
   ): Promise<GetUsersResponseInterface | ErrorResponse> {
-    const user = await this.service.getUsers({
-      fields: query.fields,
-      rest: true,
-      page: Number(query.page) || Number(query.page) - 1,
-      pageSize: Number(query.pageSize) || 100,
-    });
-    return res.status(user.status || HttpStatus.OK).send(user);
+    return await this.service.getUsers(
+      {
+        fields: query.fields,
+        rest: true,
+        page: Number(query.page) || Number(query.page) - 1,
+        pageSize: Number(query.pageSize) || 100,
+      },
+      res,
+    );
   }
 
+  @UseGuards(SessionGuard)
   @Get('api/users/:id')
-  async getUser(@Param('id') id: string, @Query() query: any) {
-    return await this.service.getUser({ id, fields: query.fields, rest: true });
+  async getUser(@Param('id') id: string, @Query() query: any, @Res() res: any) {
+    return await this.service.getUser(
+      { id, fields: query.fields, rest: true },
+      res,
+    );
+  }
+
+  @UseGuards(SessionGuard)
+  @Put('api/users')
+  async updateUser(
+    @Body() data: any,
+    @Query() query: any,
+    @Req() req: any,
+    @Res() res: any,
+  ) {
+    const id = req?.session?.user?.id;
+    data = { ...data, id };
+    return await this.service.updateUser(
+      {
+        data,
+        fields: query.fields,
+        rest: true,
+      },
+      res,
+    );
   }
 }
