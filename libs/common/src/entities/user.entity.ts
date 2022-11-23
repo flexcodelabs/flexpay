@@ -1,17 +1,16 @@
 import {
-  BaseEntity,
   BeforeInsert,
   Column,
-  CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
-
 import * as bcrypt from 'bcrypt';
+import { DateEntity } from './date.entity';
+import { ApiKey } from './key.entity';
 
 @Entity('user', { schema: 'public' })
-export class User extends BaseEntity {
+export class User extends DateEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -39,8 +38,8 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @CreateDateColumn()
-  created: Date;
+  @Column({ name: 'lastlogin', nullable: true })
+  lastLogin: Date;
 
   @Column({ nullable: false, select: true })
   password: string;
@@ -48,14 +47,17 @@ export class User extends BaseEntity {
   @Column({ nullable: false, select: true })
   salt?: string;
 
-  @UpdateDateColumn({ name: 'lastupdated' })
-  lastUpdated: Date;
-
   @BeforeInsert()
   async beforeInsertTransaction() {
     this.salt = await bcrypt.genSalt();
     this.password = await this.hashPassword(this.password, this.salt);
   }
+
+  @OneToMany(() => ApiKey, (key) => key.createdBy, {
+    eager: false,
+    cascade: false,
+  })
+  keys: ApiKey[];
 
   async hashPassword(password: string, salt: string): Promise<any> {
     return bcrypt.hash(password, salt);

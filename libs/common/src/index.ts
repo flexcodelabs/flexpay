@@ -5,6 +5,7 @@ export * from './interceptors/logging.interceptor';
 export * from './system/system.configuration';
 export * from './rmq/rmq.service';
 export * from './entities/user.entity';
+export * from './entities/key.entity';
 export * from './helpers/repository.helper';
 export * from './rmq/rmq.module';
 export * from './constants/core.constants';
