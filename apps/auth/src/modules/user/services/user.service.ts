@@ -1,12 +1,14 @@
 import {
   ErrorResponse,
   errorSanitizer,
+  GetUserDTO,
   GetUsersRequestInterface,
   GetUsersResponseInterface,
   LoginInterface,
   RegisterMSDTO,
   sanitizeResponse,
   select,
+  UpdateUserMSDTO,
   User,
 } from '@flexpay/common';
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -33,6 +35,25 @@ export class UserService {
       return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
     }
   };
+
+  updateUser = async (
+    payload: UpdateUserMSDTO,
+  ): Promise<User | ErrorResponse> => {
+    try {
+      return await this.update(payload);
+    } catch (e) {
+      return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
+    }
+  };
+
+  private update = async (payload: UpdateUserMSDTO) => {
+    const user = await this.getUser({ id: payload.data.id, rest: false });
+    if (user.status) {
+      return user;
+    }
+    await this.repository.save(payload.data);
+    return await this.getUser({ ...payload, id: payload.data.id });
+  };
   getUsers = async (
     payload: GetUsersRequestInterface,
   ): Promise<GetUsersResponseInterface | ErrorResponse> => {
@@ -48,11 +69,15 @@ export class UserService {
     }
   };
 
-  getUser = async (id: string, query: any): Promise<User> => {
-    return await this.repository.findOneOrFail({
-      where: { id: id },
-      select: select(query.fields, this.repository.metadata),
-    });
+  getUser = async (payload: GetUserDTO): Promise<User | ErrorResponse> => {
+    try {
+      return await this.repository.findOneOrFail({
+        where: { id: payload.id },
+        select: select(payload.fields, this.repository.metadata),
+      });
+    } catch (e) {
+      return { error: e.message, status: 400 };
+    }
   };
 
   async login(userLoginInfo: LoginInterface, fields: any[]): Promise<any> {

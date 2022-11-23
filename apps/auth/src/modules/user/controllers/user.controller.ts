@@ -1,10 +1,12 @@
 import {
   ErrorResponse,
+  GetUserDTO,
   GetUsersRequestInterface,
   GetUsersResponseInterface,
   LoginInterface,
   RegisterMSDTO,
   RmqService,
+  UpdateUserMSDTO,
   User,
 } from '@flexpay/common';
 import { Controller } from '@nestjs/common';
@@ -39,10 +41,10 @@ export class UserController {
   }
   @EventPattern('getUser')
   async getUser(
-    @Payload() payload: GetUsersRequestInterface,
+    @Payload() payload: GetUserDTO,
     @Ctx() context: RmqContext,
-  ): Promise<GetUsersResponseInterface | ErrorResponse> {
-    const user = await this.service.getUsers(payload);
+  ): Promise<User | ErrorResponse> {
+    const user = await this.service.getUser(payload);
     this.rmqService.ack(context);
     return user;
   }
@@ -51,8 +53,18 @@ export class UserController {
   async login(
     @Payload() payload: LoginInterface,
     @Ctx() context: RmqContext,
-  ): Promise<GetUsersResponseInterface | ErrorResponse> {
+  ): Promise<User | ErrorResponse> {
     const user = await this.service.login(payload, []);
+    this.rmqService.ack(context);
+    return user;
+  }
+
+  @EventPattern('updateUser')
+  async updateUser(
+    @Payload() payload: UpdateUserMSDTO,
+    @Ctx() context: RmqContext,
+  ): Promise<User | ErrorResponse> {
+    const user = await this.service.updateUser(payload);
     this.rmqService.ack(context);
     return user;
   }
