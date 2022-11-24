@@ -1,13 +1,6 @@
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { DateEntity } from './date.entity';
-import { ApiKey } from './key.entity';
 
 @Entity('user', { schema: 'public' })
 export class User extends DateEntity {
@@ -52,12 +45,6 @@ export class User extends DateEntity {
     this.salt = await bcrypt.genSalt();
     this.password = await this.hashPassword(this.password, this.salt);
   }
-
-  @OneToMany(() => ApiKey, (key) => key.createdBy, {
-    eager: false,
-    cascade: false,
-  })
-  keys: ApiKey[];
 
   async hashPassword(password: string, salt: string): Promise<any> {
     return bcrypt.hash(password, salt);
