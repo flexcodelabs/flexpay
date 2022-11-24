@@ -9,10 +9,7 @@ export interface ResponseInterfance {
     (): any;
     new (): any;
     send: {
-      (arg0: any):
-        | Record<string, unknown>
-        | ErrorResponse
-        | PromiseLike<unknown | ErrorResponse>;
+      (arg0: any): any;
       new (): any;
     };
   };
