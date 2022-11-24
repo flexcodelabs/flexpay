@@ -1,4 +1,5 @@
 import {
+  ApiKey,
   ErrorResponse,
   GetUserDTO,
   GetUsersRequestInterface,
@@ -65,6 +66,16 @@ export class UserController {
     @Ctx() context: RmqContext,
   ): Promise<User | ErrorResponse> {
     const user = await this.service.updateUser(payload);
+    this.rmqService.ack(context);
+    return user;
+  }
+
+  @EventPattern('generateKey')
+  async generateKey(
+    @Payload() createdBy: User,
+    @Ctx() context: RmqContext,
+  ): Promise<ApiKey | ErrorResponse> {
+    const user = await this.service.generateKey(createdBy);
     this.rmqService.ack(context);
     return user;
   }

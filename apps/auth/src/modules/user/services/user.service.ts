@@ -1,9 +1,11 @@
 import {
+  ApiKey,
   ErrorResponse,
   errorSanitizer,
   GetUserDTO,
   GetUsersRequestInterface,
   GetUsersResponseInterface,
+  id,
   LoginInterface,
   RegisterMSDTO,
   sanitizeResponse,
@@ -19,6 +21,8 @@ import { Repository } from 'typeorm';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly repository: Repository<User>,
+    @InjectRepository(ApiKey)
+    private readonly keyRepository: Repository<ApiKey>,
   ) {}
 
   register = async (payload: RegisterMSDTO): Promise<User | ErrorResponse> => {
@@ -46,9 +50,43 @@ export class UserService {
     }
   };
 
+  generateKey = async (createdBy: User): Promise<ApiKey | ErrorResponse> => {
+    try {
+      const key = await this.getCurrentKey(createdBy.id);
+      await this.keyRepository.save(key as ApiKey);
+      return await this.keyRepository.findOne({
+        where: { createdBy: createdBy.id, active: true },
+      });
+    } catch (e) {
+      return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
+    }
+  };
+
+  getCurrentKey = async (createdBy: string) => {
+    const currentKey = await this.keyRepository.findOne({
+      where: { createdBy },
+      order: { created: 'DESC' },
+    });
+    if (currentKey) {
+      return [
+        this.keyRepository.create({
+          key: id(30),
+          active: true,
+          createdBy,
+        }),
+        { ...currentKey, active: false },
+      ];
+    }
+    return this.keyRepository.create({
+      key: id(30),
+      active: true,
+      createdBy,
+    });
+  };
+
   private update = async (payload: UpdateUserMSDTO) => {
     const user = await this.getUser({ id: payload.data.id, rest: false });
-    if (user.status) {
+    if (user?.status) {
       return user;
     }
     delete payload.data.password;
@@ -83,20 +121,27 @@ export class UserService {
     }
   };
 
-  async login(userLoginInfo: LoginInterface, fields: any[]): Promise<any> {
-    const user: User = await User.verifyUser(
-      userLoginInfo.username,
-      userLoginInfo.password,
-    );
-    const verified = this.checkUserActiveStatus(user);
-    if (!verified.success) {
-      return verified;
+  async login(
+    userLoginInfo: LoginInterface,
+    fields: any[],
+  ): Promise<any | ErrorResponse> {
+    try {
+      const user: User = await User.verifyUser(
+        userLoginInfo.username,
+        userLoginInfo.password,
+      );
+      const verified = this.checkUserActiveStatus(user);
+      if (!verified.success) {
+        return verified;
+      }
+      const userWithFields = await this.repository.findOne({
+        where: { id: user.id },
+        relations: fields,
+      });
+      return sanitizeResponse(userWithFields);
+    } catch (e) {
+      return { error: errorSanitizer(e), status: 400 };
     }
-    const userWithFields = await this.repository.findOne({
-      where: { id: user.id },
-      relations: fields,
-    });
-    return sanitizeResponse(userWithFields);
   }
 
   checkUserActiveStatus = (user: User) => {

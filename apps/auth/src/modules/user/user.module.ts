@@ -1,11 +1,12 @@
+import { RmqModule } from '@flexpay/common';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserService } from './services/user.service';
-import { RmqModule, User } from '@flexpay/common';
+import { authEntities } from '../../entities';
 import { UserController } from './controllers/user.controller';
+import { UserService } from './services/user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), RmqModule],
+  imports: [TypeOrmModule.forFeature(authEntities), RmqModule],
   controllers: [UserController],
   providers: [UserService],
 })
