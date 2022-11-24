@@ -2,6 +2,7 @@ import {
   CanActivate,
   createParamDecorator,
   ExecutionContext,
+  ForbiddenException,
   Inject,
   Injectable,
   Logger,
@@ -10,7 +11,6 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { AUTH_SERVICE } from '../constants/core.constants';
-import { User } from '../entities/user.entity';
 import { ErrorResponse } from '../interfaces/shared.interface';
 @Injectable()
 export class SessionGuard implements CanActivate {
@@ -42,17 +42,18 @@ export class SessionGuard implements CanActivate {
         request.session.user = user;
         return true;
       }
-      throw false;
+      throw new ForbiddenException();
     } catch (e) {
       Logger.error(e.message);
-      return false;
+      throw new ForbiddenException(e.message);
     }
   }
 
-  verifyUser = (user: User | ErrorResponse) => {
-    if (user.status) {
-      throw new UnauthorizedException(user);
+  verifyUser = (user: any | ErrorResponse) => {
+    if (user?.status) {
+      throw new UnauthorizedException();
     }
+    return;
   };
 }
 export const SessionUser = createParamDecorator((data, req) => {
