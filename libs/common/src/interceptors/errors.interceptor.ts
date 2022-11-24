@@ -34,7 +34,7 @@ export class HttpErrorFilter implements ExceptionFilter {
     message = this.sanitizeMessage(message);
     Logger.error(message, `${request?.method} ${request?.url}`, 'Exception');
     if (response) {
-      return response.status(HttpStatus.BAD_REQUEST).send({ error: message });
+      return response?.status(HttpStatus.BAD_REQUEST).send({ error: message });
     }
     return new Error(message);
   }

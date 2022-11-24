@@ -14,3 +14,4 @@ export * from './interfaces/shared.interface';
 export * from './interfaces/user.interface';
 export * from './helpers/sanitizer.helper';
 export * from './auth/session.guard';
+export * from './helpers/id.helper';
