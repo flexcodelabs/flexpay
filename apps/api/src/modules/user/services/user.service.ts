@@ -4,6 +4,7 @@ import {
   GetUserDTO,
   GetUsersResponseInterface,
   RegisterMSDTO,
+  ResponseInterfance,
   sanitizeResponse,
   User,
 } from '@flexpay/common';
@@ -21,7 +22,7 @@ export class UserService {
   ): Promise<User | ErrorResponse> => {
     const user = await lastValueFrom(this.authClient.send('register', payload));
     return res
-      .status(user.status || HttpStatus.OK)
+      ?.status(user?.status || HttpStatus.OK)
       .send(sanitizeResponse(user));
   };
 
@@ -33,7 +34,18 @@ export class UserService {
       this.authClient.send('updateUser', payload),
     );
     return res
-      .status(updatedUser.status || HttpStatus.OK)
+      ?.status(updatedUser?.status || HttpStatus.OK)
+      .send(sanitizeResponse(updatedUser));
+  };
+  generateKey = async (
+    createdBy: User,
+    res: ResponseInterfance,
+  ): Promise<User | ErrorResponse> => {
+    const updatedUser = await lastValueFrom(
+      this.authClient.send('generateKey', createdBy),
+    );
+    return res
+      ?.status(updatedUser?.status || HttpStatus.OK)
       .send(sanitizeResponse(updatedUser));
   };
 
@@ -45,14 +57,14 @@ export class UserService {
       this.authClient.send('getUsers', payload),
     );
     return res
-      .status(users.status || HttpStatus.OK)
+      ?.status(users?.status || HttpStatus.OK)
       .send(sanitizeResponse(users));
   };
 
   getUser = async (payload: GetUserDTO, res: any): Promise<User> => {
     const user = await lastValueFrom(this.authClient.send('getUser', payload));
     return res
-      .status(user.status || HttpStatus.OK)
+      ?.status(user?.status || HttpStatus.OK)
       .send(sanitizeResponse(user));
   };
 }

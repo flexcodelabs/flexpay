@@ -84,4 +84,9 @@ export class UserController {
       res,
     );
   }
+  @UseGuards(SessionGuard)
+  @Post('api/keys')
+  async generateKey(@Req() req: any, @Res() res: any) {
+    return await this.service.generateKey(req?.session?.user, res);
+  }
 }
