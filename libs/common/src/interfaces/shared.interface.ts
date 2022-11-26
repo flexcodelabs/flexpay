@@ -14,3 +14,10 @@ export interface ResponseInterfance {
     };
   };
 }
+
+export interface GetManyInterface {
+  fields: string;
+  rest: boolean;
+  page: number;
+  pageSize: number;
+}
