@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { apiEntities } from './entities';
 import { UserModule } from './modules/user/user.module';
+import { MetadataModule } from './modules/metadata/metadata.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserModule } from './modules/user/user.module';
       }),
     }),
     UserModule,
+    MetadataModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_FILTER, useClass: HttpErrorFilter }],
