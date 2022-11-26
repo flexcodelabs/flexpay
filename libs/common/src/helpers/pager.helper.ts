@@ -1,18 +1,21 @@
 import { PagerInterface } from '../interfaces/shared.interface';
 
-const page = (query: { page: number }): number => {
-  if (!Number(query.page)) {
+const getPage = (page: number | string): number => {
+  if (!Number(page)) {
     return 0;
   }
-  return Number(query.page) - 1;
+  return Number(page) - 1;
 };
 
-const pageSize = (query: { pageSize: number }): number => {
-  if (!Number(query.pageSize)) {
+const getPageSize = (pageSize: number | string): number => {
+  if (!Number(pageSize)) {
     return 100;
   }
-  return Number(query.pageSize);
+  return Number(pageSize);
 };
-export const pagerDetails = (query: any): PagerInterface => {
-  return { page: page(query), pageSize: pageSize(query) };
+export const pagerDetails = (payload: PagerInterface): PagerInterface => {
+  return {
+    page: getPage(payload.page),
+    pageSize: getPageSize(payload.pageSize),
+  };
 };
