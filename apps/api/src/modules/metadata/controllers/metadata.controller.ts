@@ -9,6 +9,7 @@ import {
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -77,6 +78,22 @@ export class MetadataController {
           id,
           fields: query.fields,
           rest: true,
+        },
+        res,
+      );
+    }
+  }
+
+  @UseGuards(SessionGuard)
+  @Delete(':id')
+  async delete(
+    @Res() res: ResponseInterfance,
+    @Param('id') id: string,
+  ): Promise<Metadata | ErrorResponse> {
+    {
+      return await this.service.delete(
+        {
+          id,
         },
         res,
       );

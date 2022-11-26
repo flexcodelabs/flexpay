@@ -50,4 +50,15 @@ export class MetadataService {
       ?.status(metadata?.status || HttpStatus.OK)
       .send(sanitizeResponse(metadata));
   };
+  delete = async (
+    payload: { id: string },
+    res: ResponseInterfance,
+  ): Promise<Metadata | ErrorResponse> => {
+    const metadata = await lastValueFrom(
+      this.authClient.send('deleteMetadata', payload),
+    );
+    return res
+      ?.status(metadata?.status || HttpStatus.OK)
+      .send(sanitizeResponse(metadata));
+  };
 }
