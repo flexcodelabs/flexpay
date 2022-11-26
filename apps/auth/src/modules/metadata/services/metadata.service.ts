@@ -8,6 +8,7 @@ import {
   select,
   GetAllMetadataRequestInterface,
   GetAllMetadataResponseInterface,
+  GetOneMetadataRequestInterface,
 } from '@flexpay/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -51,6 +52,20 @@ export class MetadataService {
         page: payload.page + 1,
         pageSize: payload.pageSize,
       };
+    } catch (e) {
+      return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
+    }
+  };
+
+  getMetadata = async (
+    payload: GetOneMetadataRequestInterface,
+  ): Promise<Metadata | ErrorResponse> => {
+    try {
+      const metadata = await this.repository.findOneOrFail({
+        select: this.getSelections(payload, this.repository),
+        where: { id: payload.id },
+      });
+      return metadata;
     } catch (e) {
       return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
     }
