@@ -10,6 +10,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -56,6 +57,24 @@ export class MetadataController {
       return await this.service.getMetadatas(
         {
           ...pager,
+          fields: query.fields,
+          rest: true,
+        },
+        res,
+      );
+    }
+  }
+  @UseGuards(SessionGuard)
+  @Get(':id')
+  async getMetadata(
+    @Query() query: any,
+    @Res() res: ResponseInterfance,
+    @Param('id') id: string,
+  ): Promise<Metadata | ErrorResponse> {
+    {
+      return await this.service.getMetadata(
+        {
+          id,
           fields: query.fields,
           rest: true,
         },

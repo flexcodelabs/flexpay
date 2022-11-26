@@ -3,6 +3,7 @@ import {
   AUTH_SERVICE,
   ErrorResponse,
   GetManyInterface,
+  GetOneInterface,
   Metadata,
   MetadataCreateMSDTO,
   ResponseInterfance,
@@ -32,6 +33,18 @@ export class MetadataService {
   ): Promise<Metadata[] | ErrorResponse> => {
     const metadata = await lastValueFrom(
       this.authClient.send('getMetadatas', payload),
+    );
+    return res
+      ?.status(metadata?.status || HttpStatus.OK)
+      .send(sanitizeResponse(metadata));
+  };
+
+  getMetadata = async (
+    payload: GetOneInterface,
+    res: ResponseInterfance,
+  ): Promise<Metadata | ErrorResponse> => {
+    const metadata = await lastValueFrom(
+      this.authClient.send('getMetadata', payload),
     );
     return res
       ?.status(metadata?.status || HttpStatus.OK)
