@@ -27,13 +27,12 @@ export class UserService {
 
   register = async (payload: RegisterMSDTO): Promise<User | ErrorResponse> => {
     try {
+      const selections = this.getSelections(payload, this.repository);
       const user = this.repository.create(payload.data);
       const newUser = await this.repository.save(user);
       return await this.repository.findOne({
         where: { id: newUser.id },
-        select: payload.rest
-          ? select(payload.fields, this.repository.metadata)
-          : null,
+        select: selections,
       });
     } catch (e) {
       return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
@@ -60,6 +59,10 @@ export class UserService {
     } catch (e) {
       return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
     }
+  };
+
+  getSelections = (payload: any, repository: Repository<any>) => {
+    return payload.rest ? select(payload.fields, repository.metadata) : null;
   };
 
   getCurrentKey = async (createdBy: string) => {
@@ -98,9 +101,7 @@ export class UserService {
   ): Promise<GetUsersResponseInterface | ErrorResponse> => {
     try {
       const users = await this.repository.find({
-        select: payload.rest
-          ? select(payload.fields, this.repository.metadata)
-          : null,
+        select: this.getSelections(payload, this.repository),
       });
       return { users };
     } catch (e) {
@@ -110,11 +111,23 @@ export class UserService {
 
   getUser = async (payload: GetUserDTO): Promise<User | ErrorResponse> => {
     try {
+      return await this.getUserInternal(
+        payload,
+        this.getSelections(payload, this.repository),
+      );
+    } catch (e) {
+      return { error: e.message, status: HttpStatus.BAD_REQUEST };
+    }
+  };
+
+  private getUserInternal = async (
+    payload: GetUserDTO,
+    selections: any | null,
+  ): Promise<User | ErrorResponse> => {
+    try {
       return await this.repository.findOneOrFail({
         where: { id: payload.id },
-        select: payload.rest
-          ? select(payload.fields, this.repository.metadata)
-          : null,
+        select: selections,
       });
     } catch (e) {
       return { error: e.message, status: 400 };

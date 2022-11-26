@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { authEntities } from './entities';
+import { MetadataModule } from './modules/metadata/metadata.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { UserModule } from './modules/user/user.module';
       }),
     }),
     UserModule,
+    MetadataModule,
   ],
 })
 export class AuthModule {}
