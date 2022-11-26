@@ -12,6 +12,7 @@ export * from './helpers/repository.helper';
 export * from './rmq/rmq.module';
 export * from './constants/core.constants';
 export * from './dto/auth.dto';
+export * from './dto/metadata.dto';
 export * from './interfaces/shared.interface';
 export * from './interfaces/user.interface';
 export * from './helpers/sanitizer.helper';

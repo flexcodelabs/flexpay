@@ -5,6 +5,6 @@ export class NameEntity extends DateEntity {
   @Column()
   name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   code: string;
 }
