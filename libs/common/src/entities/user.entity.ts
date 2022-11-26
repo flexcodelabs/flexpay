@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Metadata } from '..';
 import { Channel } from './channel.entity';
 import { DateEntity } from './date.entity';
 
@@ -52,6 +53,12 @@ export class User extends DateEntity {
     cascade: false,
   })
   channels: Channel[];
+
+  @OneToMany(() => Metadata, (metadata) => metadata.createdBy, {
+    eager: false,
+    cascade: false,
+  })
+  metadata: Metadata[];
 
   @BeforeInsert()
   async beforeInsertTransaction() {
