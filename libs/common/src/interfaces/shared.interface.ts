@@ -21,6 +21,11 @@ export interface GetManyInterface {
   page: number;
   pageSize: number;
 }
+export interface GetOneInterface {
+  fields: string;
+  rest: boolean;
+  id: string;
+}
 
 export interface PagerInterface {
   page: number;
