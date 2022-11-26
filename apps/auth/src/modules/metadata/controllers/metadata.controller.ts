@@ -1,6 +1,8 @@
 import { Controller } from '@nestjs/common';
 import {
   ErrorResponse,
+  GetAllMetadataRequestInterface,
+  GetAllMetadataResponseInterface,
   Metadata,
   MetadataCreateMSDTO,
   RmqService,
@@ -21,6 +23,16 @@ export class MetadataController {
     @Ctx() context: RmqContext,
   ): Promise<Metadata | ErrorResponse> {
     const metadata = await this.service.createMetadata(payload);
+    this.rmqService.ack(context);
+    return metadata;
+  }
+
+  @EventPattern('getMetadatas')
+  async getMetadatas(
+    @Payload() payload: GetAllMetadataRequestInterface,
+    @Ctx() context: RmqContext,
+  ): Promise<GetAllMetadataResponseInterface | ErrorResponse> {
+    const metadata = await this.service.getMetadatas(payload);
     this.rmqService.ack(context);
     return metadata;
   }
