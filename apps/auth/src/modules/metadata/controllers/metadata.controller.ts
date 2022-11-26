@@ -1,5 +1,7 @@
 import { Controller } from '@nestjs/common';
 import {
+  DeleteReqInterface,
+  DeleteResInterface,
   ErrorResponse,
   GetAllMetadataRequestInterface,
   GetAllMetadataResponseInterface,
@@ -44,6 +46,16 @@ export class MetadataController {
     @Ctx() context: RmqContext,
   ): Promise<Metadata | ErrorResponse> {
     const metadata = await this.service.getMetadata(payload);
+    this.rmqService.ack(context);
+    return metadata;
+  }
+
+  @EventPattern('deleteMetadata')
+  async delete(
+    @Payload() payload: DeleteReqInterface,
+    @Ctx() context: RmqContext,
+  ): Promise<DeleteResInterface | ErrorResponse> {
+    const metadata = await this.service.deleteMetadata(payload);
     this.rmqService.ack(context);
     return metadata;
   }

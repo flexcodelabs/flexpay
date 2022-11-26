@@ -9,6 +9,8 @@ import {
   GetAllMetadataRequestInterface,
   GetAllMetadataResponseInterface,
   GetOneMetadataRequestInterface,
+  DeleteReqInterface,
+  DeleteResInterface,
 } from '@flexpay/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -66,6 +68,20 @@ export class MetadataService {
         where: { id: payload.id },
       });
       return metadata;
+    } catch (e) {
+      return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
+    }
+  };
+
+  deleteMetadata = async (
+    payload: DeleteReqInterface,
+  ): Promise<DeleteResInterface | ErrorResponse> => {
+    try {
+      await this.repository.findOneOrFail({
+        where: { id: payload.id },
+      });
+      await this.repository.delete({ id: payload.id });
+      return { message: 'Metadata deleted successfully' };
     } catch (e) {
       return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
     }
