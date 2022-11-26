@@ -18,3 +18,5 @@ export * from './interfaces/user.interface';
 export * from './helpers/sanitizer.helper';
 export * from './auth/session.guard';
 export * from './helpers/id.helper';
+export * from './interfaces/metadata.interface';
+export * from './helpers/pager.helper';

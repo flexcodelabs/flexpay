@@ -21,3 +21,8 @@ export interface GetManyInterface {
   page: number;
   pageSize: number;
 }
+
+export interface PagerInterface {
+  page: number;
+  pageSize: number;
+}
