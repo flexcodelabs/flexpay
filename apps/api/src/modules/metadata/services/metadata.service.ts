@@ -2,6 +2,7 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import {
   AUTH_SERVICE,
   ErrorResponse,
+  GetManyInterface,
   Metadata,
   MetadataCreateMSDTO,
   ResponseInterfance,
@@ -19,6 +20,18 @@ export class MetadataService {
   ): Promise<Metadata | ErrorResponse> => {
     const metadata = await lastValueFrom(
       this.authClient.send('createMetadata', payload),
+    );
+    return res
+      ?.status(metadata?.status || HttpStatus.OK)
+      .send(sanitizeResponse(metadata));
+  };
+
+  getMetadatas = async (
+    payload: GetManyInterface,
+    res: ResponseInterfance,
+  ): Promise<Metadata[] | ErrorResponse> => {
+    const metadata = await lastValueFrom(
+      this.authClient.send('getMetadatas', payload),
     );
     return res
       ?.status(metadata?.status || HttpStatus.OK)

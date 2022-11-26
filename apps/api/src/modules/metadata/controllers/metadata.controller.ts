@@ -1,7 +1,15 @@
-import { ErrorResponse, Metadata, SessionGuard } from '@flexpay/common';
+import {
+  ErrorResponse,
+  Metadata,
+  pagerDetails,
+  PagerInterface,
+  ResponseInterfance,
+  SessionGuard,
+} from '@flexpay/common';
 import {
   Body,
   Controller,
+  Get,
   Post,
   Query,
   Req,
@@ -26,6 +34,28 @@ export class MetadataController {
       return await this.service.create(
         {
           data: { ...data, createdBy: req.session.user } as Metadata,
+          fields: query.fields,
+          rest: true,
+        },
+        res,
+      );
+    }
+  }
+
+  @UseGuards(SessionGuard)
+  @Get()
+  async getMetadatas(
+    @Query() query: any,
+    @Res() res: ResponseInterfance,
+  ): Promise<Metadata[] | ErrorResponse> {
+    {
+      const pager: PagerInterface = pagerDetails({
+        page: query.page,
+        pageSize: query.pageSize,
+      });
+      return await this.service.getMetadatas(
+        {
+          ...pager,
           fields: query.fields,
           rest: true,
         },
