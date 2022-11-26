@@ -17,6 +17,8 @@ const sanitizeMessage = (message: string) => {
       'Could not find any entity of type "User" matching',
     )
       ? 'User not found'
+      : message.includes('Could not find any entity of type "Metadata"')
+      ? 'Metadata could not be found'
       : message.includes('null value in column')
       ? sanitizeNullError(message)
       : message;

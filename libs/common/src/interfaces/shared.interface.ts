@@ -31,3 +31,10 @@ export interface PagerInterface {
   page: number;
   pageSize: number;
 }
+
+export interface DeleteReqInterface {
+  id: string;
+}
+export interface DeleteResInterface {
+  message: string;
+}
