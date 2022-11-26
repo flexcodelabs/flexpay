@@ -1,6 +1,7 @@
 import {
   AUTH_SERVICE,
   ErrorResponse,
+  GetManyInterface,
   GetUserDTO,
   GetUsersResponseInterface,
   RegisterMSDTO,
@@ -18,7 +19,7 @@ export class UserService {
 
   register = async (
     payload: RegisterMSDTO,
-    res: any,
+    res: ResponseInterfance,
   ): Promise<User | ErrorResponse> => {
     const user = await lastValueFrom(this.authClient.send('register', payload));
     return res
@@ -28,7 +29,7 @@ export class UserService {
 
   updateUser = async (
     payload: RegisterMSDTO,
-    res: any,
+    res: ResponseInterfance,
   ): Promise<User | ErrorResponse> => {
     const updatedUser = await lastValueFrom(
       this.authClient.send('updateUser', payload),
@@ -50,8 +51,8 @@ export class UserService {
   };
 
   getUsers = async (
-    payload: any,
-    res: any,
+    payload: GetManyInterface,
+    res: ResponseInterfance,
   ): Promise<GetUsersResponseInterface | ErrorResponse> => {
     const users = await lastValueFrom(
       this.authClient.send('getUsers', payload),
@@ -61,7 +62,10 @@ export class UserService {
       .send(sanitizeResponse(users));
   };
 
-  getUser = async (payload: GetUserDTO, res: any): Promise<User> => {
+  getUser = async (
+    payload: GetUserDTO,
+    res: ResponseInterfance,
+  ): Promise<User> => {
     const user = await lastValueFrom(this.authClient.send('getUser', payload));
     return res
       ?.status(user?.status || HttpStatus.OK)
