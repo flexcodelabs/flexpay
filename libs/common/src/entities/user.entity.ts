@@ -1,5 +1,12 @@
 import * as bcrypt from 'bcrypt';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Channel } from './channel.entity';
 import { DateEntity } from './date.entity';
 
 @Entity('user', { schema: 'public' })
@@ -39,6 +46,12 @@ export class User extends DateEntity {
 
   @Column({ nullable: false, select: true })
   salt?: string;
+
+  @OneToMany(() => Channel, (channel) => channel.createdBy, {
+    eager: false,
+    cascade: false,
+  })
+  channels: Channel[];
 
   @BeforeInsert()
   async beforeInsertTransaction() {
