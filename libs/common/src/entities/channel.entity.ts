@@ -1,4 +1,5 @@
-import { Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
+import { Metadata } from '..';
 import { NameEntity } from './name.entity';
 import { User } from './user.entity';
 
@@ -11,4 +12,22 @@ export class Channel extends NameEntity {
   })
   @JoinColumn({ name: 'userid', referencedColumnName: 'id' })
   createdBy?: User;
+
+  @ManyToMany(() => Metadata, (metadata) => metadata, {
+    eager: false,
+    cascade: false,
+    nullable: true,
+  })
+  @JoinTable({
+    name: 'channelmetadata',
+    joinColumn: {
+      name: 'channel',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'metadta',
+      referencedColumnName: 'id',
+    },
+  })
+  metadata: Metadata[];
 }
