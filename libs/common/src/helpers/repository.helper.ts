@@ -12,19 +12,40 @@ const sortFields = (fields: string, metaData: EntityMetadata) => {
         .indexOf(item) > -1,
   );
 };
-const verifyMetadata = (fields: string, results: string[]): void => {
+
+const getRelations = (fields: string[], metaData: EntityMetadata): string[] => {
+  const relations = metaData.relations.map((relation) => relation.propertyPath);
+  return fields.filter((field) => relations.includes(field));
+};
+const verifyMetadata = (
+  fields: string,
+  results: string[],
+  relations: string[],
+): void => {
+  console.log(relations);
   const extraMetadata = fields
     .split(',')
-    .filter((field) => !results.includes(field));
+    .filter((field) => !results.includes(field) && !relations.includes(field));
   if (extraMetadata.length > 0) {
     throw new BadRequestException('Additional selectors are not permitted');
   }
   return;
 };
-export const select = (fields: any, metaData: EntityMetadata): any[] => {
+export const relations = (fields: any, metaData: EntityMetadata): any => {
   if (fields) {
     const resutls = sortFields(fields, metaData);
-    verifyMetadata(fields, resutls);
+    return getRelations(resutls, metaData);
+  }
+  return [];
+};
+export const select = (fields: any, metaData: EntityMetadata): any => {
+  if (fields) {
+    const resutls = sortFields(fields, metaData);
+    verifyMetadata(
+      fields,
+      resutls,
+      metaData.relations.map((relation) => relation.propertyPath),
+    );
     return resutls;
   }
   throw new BadRequestException('Missing selectors');
