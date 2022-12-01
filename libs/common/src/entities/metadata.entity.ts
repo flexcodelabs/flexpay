@@ -10,6 +10,9 @@ export class Metadata extends NameEntity {
   @Column({ name: 'datatype' })
   dataType: string;
 
+  @Column({ default: 'FALSE' })
+  secret: boolean;
+
   @ManyToOne(() => User, (user) => user.metadata, {
     nullable: false,
     cascade: false,
