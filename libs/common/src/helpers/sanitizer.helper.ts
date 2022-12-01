@@ -68,7 +68,9 @@ const sanitizeObject = (responseObject: any) => {
   };
 
   const newResponseObject: Record<string, unknown> = {};
-  const attributeKeys = Object.keys(omit(responseObject, ['password', 'salt']));
+  const attributeKeys = Object.keys(
+    omit(responseObject, ['password', 'salt', 'secret']),
+  );
   attributeKeys.forEach((attributeKey) => {
     let attributeValue: string | boolean | number | any;
     if (responseObject[attributeKey] === false) {

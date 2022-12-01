@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   BaseEntity,
   EntityMetadata,
+  FindOptionsRelations,
   FindOptionsSelect,
   FindOptionsWhere,
   Repository,
@@ -16,6 +17,8 @@ import {
   GetManyReqInterface,
   GetManyResInterface,
   GetOneInterface,
+  relations,
+  sanitizeResponse,
   SaveInterface,
   select,
 } from '../..';
@@ -29,13 +32,15 @@ export class AuthService<T extends BaseEntity> {
 
   async findOne(payload: GetOneInterface): Promise<T | ErrorResponse> {
     try {
-      return await this.repository.findOneOrFail({
-        where: { id: payload.id } as
-          | FindOptionsWhere<T>
-          | FindOptionsWhere<any>,
-        select: this.getSelections(payload.fields),
-        relations: payload.relations,
-      });
+      return sanitizeResponse(
+        await this.repository.findOneOrFail({
+          where: { id: payload.id } as
+            | FindOptionsWhere<T>
+            | FindOptionsWhere<any>,
+          select: this.getSelections(payload.fields),
+          relations: this.getRelations(payload.fields),
+        }),
+      );
     } catch (e) {
       return { error: errorSanitizer(e), status: HttpStatus.OK };
     }
@@ -46,7 +51,8 @@ export class AuthService<T extends BaseEntity> {
   ): Promise<T | ErrorResponse> => {
     try {
       const selections = this.getSelections(payload);
-      return await this.save({ data: payload.data, selections });
+      const relations = this.getRelations(payload);
+      return await this.save({ data: payload.data, selections, relations });
     } catch (e) {
       return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
     }
@@ -58,11 +64,12 @@ export class AuthService<T extends BaseEntity> {
     try {
       const [data, total] = await this.repository.findAndCount({
         select: this.getSelections(payload),
+        relations: this.getRelations(payload),
         skip: payload.pageSize * payload.page,
         take: payload.pageSize,
       });
       return {
-        payload: data,
+        payload: sanitizeResponse(data),
         total,
         page: payload.page + 1,
         pageSize: payload.pageSize,
@@ -82,17 +89,26 @@ export class AuthService<T extends BaseEntity> {
   };
 
   private findOneOrFail = async (payload: findOneOrFailInterface) => {
-    return await this.repository.findOneOrFail({
-      where: { id: payload.id } as FindOptionsWhere<T> | FindOptionsWhere<any>,
-      select: payload.select,
-      relations: payload.relations,
-    });
+    return sanitizeResponse(
+      await this.repository.findOneOrFail({
+        where: { id: payload.id } as
+          | FindOptionsWhere<T>
+          | FindOptionsWhere<any>,
+        select: payload.select,
+        relations: payload.relations,
+      }),
+    );
   };
 
   getSelections = (payload: any): FindOptionsSelect<T> => {
     const metadata: EntityMetadata =
       this.repository.manager.connection.getMetadata(this.Model);
     return payload.rest ? select(payload.fields, metadata) : null;
+  };
+  getRelations = (payload: any): FindOptionsRelations<T> => {
+    const metadata: EntityMetadata =
+      this.repository.manager.connection.getMetadata(this.Model);
+    return payload.rest ? relations(payload.fields, metadata) : [];
   };
 
   delete = async (
