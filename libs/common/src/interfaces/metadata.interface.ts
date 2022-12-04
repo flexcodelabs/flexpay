@@ -6,14 +6,9 @@ export interface GetAllMetadataRequestInterface {
   page: number;
   pageSize: number;
 }
-export interface GetOneMetadataRequestInterface {
-  fields: string | string[];
-  rest?: boolean;
-  id: string;
-}
 
 export interface GetAllMetadataResponseInterface {
-  metadata: Metadata[];
+  payload: Metadata[];
   total: number;
   page: number;
   pageSize: number;

@@ -1,17 +1,17 @@
-import { Controller } from '@nestjs/common';
 import {
   DeleteReqInterface,
   DeleteResInterface,
   ErrorResponse,
   GetAllMetadataRequestInterface,
   GetAllMetadataResponseInterface,
-  GetOneMetadataRequestInterface,
+  GetOneInterface,
   Metadata,
-  MetadataCreateMSDTO,
   RmqService,
+  SharedCreateMSDTO,
 } from '@flexpay/common';
+import { Controller } from '@nestjs/common';
+import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { MetadataService } from '../services/metadata.service';
-import { EventPattern, Payload, Ctx, RmqContext } from '@nestjs/microservices';
 
 @Controller()
 export class MetadataController {
@@ -22,10 +22,10 @@ export class MetadataController {
 
   @EventPattern('createMetadata')
   async createMetadata(
-    @Payload() payload: MetadataCreateMSDTO,
+    @Payload() payload: SharedCreateMSDTO,
     @Ctx() context: RmqContext,
   ): Promise<Metadata | ErrorResponse> {
-    const metadata = await this.service.createMetadata(payload);
+    const metadata = await this.service.create(payload);
     this.rmqService.ack(context);
     return metadata;
   }
@@ -35,17 +35,17 @@ export class MetadataController {
     @Payload() payload: GetAllMetadataRequestInterface,
     @Ctx() context: RmqContext,
   ): Promise<GetAllMetadataResponseInterface | ErrorResponse> {
-    const metadata = await this.service.getMetadatas(payload);
+    const metadata = await this.service.getMany(payload);
     this.rmqService.ack(context);
     return metadata;
   }
 
   @EventPattern('getMetadata')
   async getMetadata(
-    @Payload() payload: GetOneMetadataRequestInterface,
+    @Payload() payload: GetOneInterface,
     @Ctx() context: RmqContext,
   ): Promise<Metadata | ErrorResponse> {
-    const metadata = await this.service.getMetadata(payload);
+    const metadata = await this.service.findOne(payload);
     this.rmqService.ack(context);
     return metadata;
   }
@@ -55,7 +55,7 @@ export class MetadataController {
     @Payload() payload: DeleteReqInterface,
     @Ctx() context: RmqContext,
   ): Promise<DeleteResInterface | ErrorResponse> {
-    const metadata = await this.service.deleteMetadata(payload);
+    const metadata = await this.service.delete(payload);
     this.rmqService.ack(context);
     return metadata;
   }

@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { authEntities } from './entities';
+import { ChannelModule } from './modules/channels/channel.module';
 import { MetadataModule } from './modules/metadata/metadata.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -25,6 +26,7 @@ import { UserModule } from './modules/user/user.module';
     }),
     UserModule,
     MetadataModule,
+    ChannelModule,
   ],
 })
 export class AuthModule {}

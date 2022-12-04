@@ -24,7 +24,7 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Post()
-  async createUsers(
+  async register(
     @Body() data: User,
     @Query() query: any,
     @Res() res: any,

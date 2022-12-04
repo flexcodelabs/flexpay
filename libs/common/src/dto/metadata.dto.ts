@@ -7,6 +7,16 @@ export class MetadataCreateMSDTO {
 
   @IsArray()
   @IsNotEmpty()
+  fields?: string;
+
+  rest?: boolean;
+}
+export class MetadataCreateAPIDTO {
+  @IsNotEmpty()
+  data: Metadata;
+
+  @IsArray()
+  @IsNotEmpty()
   fields?: string[];
 
   rest?: boolean;

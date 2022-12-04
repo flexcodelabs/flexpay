@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { apiEntities } from './entities';
 import { UserModule } from './modules/user/user.module';
 import { MetadataModule } from './modules/metadata/metadata.module';
+import { ChannelModule } from './modules/channel/channel.module';
 
 @Module({
   imports: [
@@ -22,10 +23,12 @@ import { MetadataModule } from './modules/metadata/metadata.module';
       validationSchema: Joi.object({
         RABBIT_MQ_URI: Joi.string().required(),
         RABBIT_MQ_MPESA_QUEUE: Joi.string().required(),
+        CHANNELS: Joi.string().required(),
       }),
     }),
     UserModule,
     MetadataModule,
+    ChannelModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_FILTER, useClass: HttpErrorFilter }],

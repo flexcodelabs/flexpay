@@ -1,3 +1,5 @@
+import { FindOptionsRelations, FindOptionsSelect } from 'typeorm';
+
 export interface ErrorResponse {
   status: number;
   error: string;
@@ -22,9 +24,15 @@ export interface GetManyInterface {
   pageSize: number;
 }
 export interface GetOneInterface {
-  fields: string;
+  fields: FindOptionsSelect<any>;
   rest: boolean;
   id: string;
+  relations?: null | FindOptionsRelations<any>;
+}
+export interface CreateEntityInterface {
+  fields: string;
+  rest: boolean;
+  data: unknown | Record<string, unknown>;
 }
 
 export interface PagerInterface {
@@ -34,7 +42,34 @@ export interface PagerInterface {
 
 export interface DeleteReqInterface {
   id: string;
+  key: string;
 }
 export interface DeleteResInterface {
   message: string;
+}
+
+export interface SaveInterface {
+  data: any;
+  selections: FindOptionsSelect<any>;
+  relations?: null | FindOptionsRelations<any>;
+}
+
+export interface findOneOrFailInterface {
+  select: FindOptionsSelect<any>;
+  id: string;
+  relations: null | FindOptionsRelations<any>;
+}
+
+export interface GetManyResInterface {
+  payload: any[];
+  total: number;
+  page: number;
+  pageSize: number;
+  status?: number;
+}
+export interface GetManyReqInterface {
+  fields: string | string[];
+  rest?: boolean;
+  page: number;
+  pageSize: number;
 }

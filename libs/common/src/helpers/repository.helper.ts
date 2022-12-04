@@ -15,14 +15,14 @@ const sortFields = (fields: string, metaData: EntityMetadata) => {
 
 const getRelations = (fields: string[], metaData: EntityMetadata): string[] => {
   const relations = metaData.relations.map((relation) => relation.propertyPath);
-  return fields.filter((field) => relations.includes(field));
+  const relation = fields.filter((field) => relations.includes(field));
+  return relation;
 };
 const verifyMetadata = (
   fields: string,
   results: string[],
   relations: string[],
 ): void => {
-  console.log(relations);
   const extraMetadata = fields
     .split(',')
     .filter((field) => !results.includes(field) && !relations.includes(field));
@@ -33,20 +33,20 @@ const verifyMetadata = (
 };
 export const relations = (fields: any, metaData: EntityMetadata): any => {
   if (fields) {
-    const resutls = sortFields(fields, metaData);
-    return getRelations(resutls, metaData);
+    return getRelations(fields.split(','), metaData);
   }
   return [];
 };
 export const select = (fields: any, metaData: EntityMetadata): any => {
   if (fields) {
-    const resutls = sortFields(fields, metaData);
+    const results = sortFields(fields, metaData);
     verifyMetadata(
       fields,
-      resutls,
+      results,
       metaData.relations.map((relation) => relation.propertyPath),
     );
-    return resutls;
+    return results;
+    //{ id: true, metadata: { id: true } };
   }
   throw new BadRequestException('Missing selectors');
 };

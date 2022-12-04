@@ -94,6 +94,7 @@ export class MetadataController {
       return await this.service.delete(
         {
           id,
+          key: 'Metadata',
         },
         res,
       );

@@ -1,6 +1,7 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import {
   AUTH_SERVICE,
+  DeleteReqInterface,
   ErrorResponse,
   GetManyInterface,
   GetOneInterface,
@@ -51,7 +52,7 @@ export class MetadataService {
       .send(sanitizeResponse(metadata));
   };
   delete = async (
-    payload: { id: string },
+    payload: DeleteReqInterface,
     res: ResponseInterfance,
   ): Promise<Metadata | ErrorResponse> => {
     const metadata = await lastValueFrom(
