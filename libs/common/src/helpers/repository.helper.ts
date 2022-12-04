@@ -18,6 +18,14 @@ const getRelations = (fields: string[], metaData: EntityMetadata): string[] => {
   const relation = fields.filter((field) => relations.includes(field));
   return relation;
 };
+const verifyFields = (fields: any) => {
+  if (!fields) {
+    throw new BadRequestException('Missing selectors');
+  }
+  if (Array.isArray(fields)) {
+    throw new Error('[Fields] Expected a string but received an array.');
+  }
+};
 const verifyMetadata = (
   fields: string,
   results: string[],
@@ -38,15 +46,16 @@ export const relations = (fields: any, metaData: EntityMetadata): any => {
   return [];
 };
 export const select = (fields: any, metaData: EntityMetadata): any => {
-  if (fields) {
-    const results = sortFields(fields, metaData);
-    verifyMetadata(
-      fields,
-      results,
-      metaData.relations.map((relation) => relation.propertyPath),
-    );
-    return results;
-    //{ id: true, metadata: { id: true } };
+  verifyFields(fields);
+  if (fields === '*') {
+    return null;
   }
-  throw new BadRequestException('Missing selectors');
+  const results = sortFields(fields, metaData);
+  verifyMetadata(
+    fields,
+    results,
+    metaData.relations.map((relation) => relation.propertyPath),
+  );
+  return results;
+  //{ id: true, metadata: { id: true } };
 };
