@@ -37,8 +37,8 @@ export class AuthService<T extends BaseEntity> {
           where: { id: payload.id } as
             | FindOptionsWhere<T>
             | FindOptionsWhere<any>,
-          select: this.getSelections(payload.fields),
-          relations: this.getRelations(payload.fields),
+          select: this.getSelections(payload),
+          relations: this.getRelations(payload),
         }),
       );
     } catch (e) {
