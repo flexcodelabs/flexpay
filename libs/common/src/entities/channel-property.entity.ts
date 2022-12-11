@@ -3,7 +3,7 @@ import { Channel, Metadata } from '..';
 import { DateEntity } from './date.entity';
 
 @Entity('channelvalue', { schema: 'public' })
-export class ChannelProperties extends DateEntity {
+export class ChannelProperty extends DateEntity {
   @Column()
   value: string;
 

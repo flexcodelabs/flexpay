@@ -1,5 +1,5 @@
 import { Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { ChannelProperties } from './channel-property.entity';
+import { ChannelProperty } from './channel-property.entity';
 import { NameEntity } from './name.entity';
 import { User } from './user.entity';
 
@@ -15,11 +15,11 @@ export class Channel extends NameEntity {
   createdBy?: User;
 
   @OneToMany(
-    () => ChannelProperties,
-    (property: ChannelProperties) => property.channel,
+    () => ChannelProperty,
+    (property: ChannelProperty) => property.channel,
     {
       cascade: true,
     },
   )
-  properties: ChannelProperties[];
+  properties: ChannelProperty[];
 }
