@@ -3,6 +3,20 @@ const sanitizeNullError = (message: string) => {
   return `${column[1]} can not be null`;
 };
 
+const sanitizeFinalMessage = (message: string): string => {
+  return message.includes('Could not find any entity of type "User" matching')
+    ? 'User not found'
+    : message.includes('Could not find any entity of type')
+    ? 'Entity could not be found'
+    : message.includes('channel with name, userid')
+    ? 'You have created a channel with a similar name'
+    : message.includes('channelvalue with metadata')
+    ? 'You have already added the property to the channel'
+    : message.includes('null value in column')
+    ? sanitizeNullError(message)
+    : message;
+};
+
 const sanitizeMessage = (message: string) => {
   if (
     message.includes('Cannot POST') ||
@@ -13,17 +27,7 @@ const sanitizeMessage = (message: string) => {
   ) {
     message = 'Oops 😢! Route not available.';
   } else {
-    message = message.includes(
-      'Could not find any entity of type "User" matching',
-    )
-      ? 'User not found'
-      : message.includes('Could not find any entity of type')
-      ? 'Entity could not be found'
-      : message.includes('channel with name, userid')
-      ? 'You have created a channel with a similar name'
-      : message.includes('null value in column')
-      ? sanitizeNullError(message)
-      : message;
+    message = sanitizeFinalMessage(message);
   }
   return message;
 };
