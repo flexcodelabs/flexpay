@@ -2,6 +2,7 @@ import {
   AUTH_SERVICE,
   Channel,
   CreateChannelInterface,
+  CreateCoreChannelInterface,
   ErrorResponse,
   ResponseInterfance,
   sanitizeResponse,
@@ -20,6 +21,17 @@ export class ChannelService {
   ): Promise<Channel | ErrorResponse> => {
     const channel = await lastValueFrom(
       this.authClient.send('createChannel', payload),
+    );
+    return res
+      ?.status(channel?.status || HttpStatus.OK)
+      .send(sanitizeResponse(channel));
+  };
+  createCore = async (
+    payload: CreateCoreChannelInterface,
+    res: ResponseInterfance,
+  ): Promise<Channel | ErrorResponse> => {
+    const channel = await lastValueFrom(
+      this.authClient.send('createCoreChannel', payload),
     );
     return res
       ?.status(channel?.status || HttpStatus.OK)
