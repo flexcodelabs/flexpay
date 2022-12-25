@@ -19,11 +19,11 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 
-@Controller('api/users')
+@Controller('api/')
 export class UserController {
   constructor(private readonly service: UserService) {}
 
-  @Post()
+  @Post('users')
   async register(
     @Body() data: User,
     @Query() query: any,
@@ -40,7 +40,7 @@ export class UserController {
   }
 
   @UseGuards(SessionGuard)
-  @Get()
+  @Get('users')
   async getUsers(
     @Query() query: any,
     @Res() res: any,
@@ -57,7 +57,7 @@ export class UserController {
   }
 
   @UseGuards(SessionGuard)
-  @Get(':id')
+  @Get('users/:id')
   async getUser(@Param('id') id: string, @Query() query: any, @Res() res: any) {
     return await this.service.getUser(
       { id, fields: query.fields, rest: true },
@@ -66,7 +66,7 @@ export class UserController {
   }
 
   @UseGuards(SessionGuard)
-  @Put()
+  @Put('users')
   async updateUser(
     @Body() data: any,
     @Query() query: any,
