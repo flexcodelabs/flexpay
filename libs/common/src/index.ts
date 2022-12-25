@@ -8,7 +8,7 @@ export * from './entities/user.entity';
 export * from './entities/key.entity';
 export * from './entities/channel.entity';
 export * from './entities/metadata.entity';
-export * from './entities/channel-property.entity';
+export * from './entities/channel.value.entity';
 export * from './entities/corechannel.entity';
 export * from './helpers/repository.helper';
 export * from './rmq/rmq.module';
