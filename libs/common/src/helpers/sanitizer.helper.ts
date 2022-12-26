@@ -9,7 +9,7 @@ const sanitizeFinalMessage = (message: string): string => {
     : message.includes('Could not find any entity of type')
     ? 'Entity could not be found'
     : message.includes('channel with name, userid')
-    ? 'You have created a channel with a similar name'
+    ? 'A channel with a similar name exists.'
     : message.includes('channelvalue with metadata')
     ? 'You have already added the property to the channel'
     : message.includes('null value in column')

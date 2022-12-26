@@ -10,3 +10,9 @@ export interface CreateCoreChannelInterface {
   fields: string;
   rest: boolean;
 }
+
+export interface GetOneChannel {
+  id: string;
+  fields: string;
+  rest: boolean;
+}

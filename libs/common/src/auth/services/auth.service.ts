@@ -16,6 +16,7 @@ import {
   findOneOrFailInterface,
   GetManyReqInterface,
   GetManyResInterface,
+  GetOneChannel,
   GetOneInterface,
   relations,
   sanitizeResponse,
@@ -52,7 +53,23 @@ export class AuthService<T extends BaseEntity> {
     try {
       const selections = this.getSelections(payload);
       const relations = this.getRelations(payload);
+      console.log('CHANNEL', payload.data);
+
       return await this.save({ data: payload.data, selections, relations });
+    } catch (e) {
+      return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
+    }
+  };
+
+  getChannel = async (payload: GetOneChannel): Promise<T | ErrorResponse> => {
+    try {
+      const select = this.getSelections(payload);
+      const relations = this.getRelations(payload);
+      return await this.findOneOrFail({
+        id: payload.id,
+        select,
+        relations,
+      });
     } catch (e) {
       return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
     }
@@ -80,9 +97,9 @@ export class AuthService<T extends BaseEntity> {
   };
 
   private save = async (payload: SaveInterface) => {
-    const metadata = await this.repository.save(payload.data);
+    const entity = await this.repository.save(payload.data);
     return await this.findOneOrFail({
-      id: metadata.id,
+      id: entity.id,
       select: payload.selections,
       relations: payload.relations,
     });
@@ -101,14 +118,14 @@ export class AuthService<T extends BaseEntity> {
   };
 
   getSelections = (payload: any): FindOptionsSelect<T> => {
-    const metadata: EntityMetadata =
+    const entity: EntityMetadata =
       this.repository.manager.connection.getMetadata(this.Model);
-    return payload.rest ? select(payload.fields, metadata) : null;
+    return payload.rest ? select(payload.fields, entity) : null;
   };
   getRelations = (payload: any): FindOptionsRelations<T> => {
-    const metadata: EntityMetadata =
+    const entity: EntityMetadata =
       this.repository.manager.connection.getMetadata(this.Model);
-    return payload.rest ? relations(payload.fields, metadata) : [];
+    return payload.rest ? relations(payload.fields, entity) : [];
   };
 
   delete = async (

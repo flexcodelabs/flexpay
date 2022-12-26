@@ -9,7 +9,10 @@ import {
 import {
   Body,
   Controller,
+  Get,
+  Param,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -34,6 +37,50 @@ export class ChannelController {
         data: { ...payload, createdBy: req.session.user } as Channel,
         rest: true,
         fields: query.fields,
+      },
+      res,
+    );
+  }
+
+  @UseGuards(SessionGuard)
+  @Put(':id')
+  async update(
+    @Body() payload: ChannelDTO,
+    @Query() query: any,
+    @Res() res: any,
+    @Req() req: any,
+    @Param() param: any,
+  ): Promise<Channel | ErrorResponse> {
+    const channel = await this.service.getOne({
+      id: param.id,
+      fields: 'id',
+      rest: true,
+    });
+    return await this.service.create(
+      {
+        data: {
+          ...payload,
+          id: channel.id as string,
+        } as Channel,
+        rest: true,
+        fields: query.fields,
+      },
+      res,
+    );
+  }
+  @UseGuards(SessionGuard)
+  @Get(':id')
+  async getChannel(
+    @Query() query: any,
+    @Res() res: any,
+    @Req() req: any,
+    @Param() param: any,
+  ): Promise<Channel | ErrorResponse> {
+    return await this.service.getOne(
+      {
+        id: param.id,
+        fields: query.fields,
+        rest: true,
       },
       res,
     );

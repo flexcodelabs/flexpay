@@ -2,6 +2,7 @@ import {
   Channel,
   CoreChannel,
   ErrorResponse,
+  GetOneChannel,
   RmqService,
   SharedCreateMSDTO,
 } from '@flexpay/common';
@@ -27,6 +28,17 @@ export class ChannelController {
     this.rmqService.ack(context);
     return channel;
   }
+
+  @EventPattern('getChannel')
+  async getChannel(
+    @Payload() payload: GetOneChannel,
+    @Ctx() context: RmqContext,
+  ): Promise<Channel | ErrorResponse> {
+    const channel = await this.service.getChannel(payload);
+    this.rmqService.ack(context);
+    return channel;
+  }
+
   @EventPattern('createCoreChannel')
   async createCoreChannel(
     @Payload() payload: SharedCreateMSDTO,

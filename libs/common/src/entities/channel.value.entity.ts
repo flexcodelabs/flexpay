@@ -1,8 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 import { Channel, Metadata } from '..';
 import { DateEntity } from './date.entity';
 
 @Entity('channelvalue', { schema: 'public' })
+@Index('unique_channel_value', ['value', 'channel.id', 'metadata.id'], {
+  unique: true,
+})
 export class ChannelValue extends DateEntity {
   @Column()
   value: string;

@@ -4,6 +4,7 @@ export interface ErrorResponse {
   status: number;
   error: string;
   success?: boolean;
+  id?: string;
 }
 
 export interface ResponseInterfance {
