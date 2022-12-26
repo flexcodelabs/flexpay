@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '../../'
+    schedule:
+      interval: 'daily'
+    target-branch: 'develop'
+    labels:
+      - 'npm'
+      - 'dependencies'
+    reviewers:
+      - 'BaharaJr'
+      - 'neicore'
+      - 'bmsteven'
+    commit-message:
+      prefix: 'NPM'
+      prefix-development: 'BOT'
