@@ -17,6 +17,17 @@ const sanitizeFinalMessage = (message: string): string => {
     : message;
 };
 
+const messageToUpper = (message: string): string => {
+  const firstCharacter =
+    typeof message?.split(' ')[0] === 'string'
+      ? message?.split(' ')[0][0].toUpperCase() +
+        message?.split(' ')[0].substring(1)
+      : null;
+  const finalMessage = message.split(' ');
+  finalMessage[0] = firstCharacter ? firstCharacter : '';
+  return finalMessage.join(' ');
+};
+
 const sanitizeMessage = (message: string) => {
   if (
     message.includes('Cannot POST') ||
@@ -29,6 +40,7 @@ const sanitizeMessage = (message: string) => {
   } else {
     message = sanitizeFinalMessage(message);
   }
+  message = messageToUpper(message);
   return message;
 };
 export const errorSanitizer = (error: {

@@ -15,7 +15,9 @@ const sortFields = (fields: string, metaData: EntityMetadata) => {
 
 const getRelations = (fields: string[], metaData: EntityMetadata): string[] => {
   const relations = metaData.relations.map((relation) => relation.propertyPath);
-  const relation = fields.filter((field) => relations.includes(field));
+  const relation = fields.filter(
+    (field) => relations.includes(field) || field.includes('.'),
+  );
   return relation;
 };
 const verifyFields = (fields: any) => {
@@ -33,7 +35,12 @@ const verifyMetadata = (
 ): void => {
   const extraMetadata = fields
     .split(',')
-    .filter((field) => !results.includes(field) && !relations.includes(field));
+    .filter(
+      (field) =>
+        !results.includes(field) &&
+        !relations.includes(field) &&
+        !field.includes('.'),
+    );
   if (extraMetadata.length > 0) {
     throw new BadRequestException('Additional selectors are not permitted');
   }
