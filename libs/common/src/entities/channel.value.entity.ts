@@ -17,7 +17,9 @@ export class ChannelValue extends DateEntity {
   @Column()
   value: string;
 
-  @ManyToOne(() => Channel, (channel: Channel) => channel.properties, {})
+  @ManyToOne(() => Channel, (channel: Channel) => channel.properties, {
+    cascade: false,
+  })
   @JoinColumn({ name: 'channel', referencedColumnName: 'id' })
   channel: Channel;
 

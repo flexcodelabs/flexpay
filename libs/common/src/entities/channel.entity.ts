@@ -16,6 +16,8 @@ export class Channel extends NameEntity {
 
   @OneToMany(() => ChannelValue, (property: ChannelValue) => property.channel, {
     cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   properties: ChannelValue[];
 }

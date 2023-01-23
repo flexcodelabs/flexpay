@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   BaseEntity,
   EntityMetadata,
+  EntityTarget,
   FindOptionsRelations,
   FindOptionsSelect,
   FindOptionsWhere,
@@ -28,7 +29,7 @@ import {
 export class AuthService<T extends BaseEntity> {
   constructor(
     protected readonly repository: Repository<T>,
-    protected readonly Model: any,
+    protected readonly Entity: EntityTarget<T>,
   ) {}
 
   async findOne(payload: GetOneInterface): Promise<T | ErrorResponse> {
@@ -53,7 +54,6 @@ export class AuthService<T extends BaseEntity> {
     try {
       const selections = this.getSelections(payload);
       const relations = this.getRelations(payload);
-      console.log('CHANNEL', payload.data);
 
       return await this.save({ data: payload.data, selections, relations });
     } catch (e) {
@@ -97,7 +97,12 @@ export class AuthService<T extends BaseEntity> {
   };
 
   private save = async (payload: SaveInterface) => {
-    const entity = await this.repository.save(payload.data);
+    let entity;
+    if (payload?.data?.id) {
+      entity = await this.repository.update(payload.data.id, payload.data);
+    } else {
+      entity = await this.repository.save(payload.data);
+    }
     return await this.findOneOrFail({
       id: entity.id,
       select: payload.selections,
@@ -119,12 +124,12 @@ export class AuthService<T extends BaseEntity> {
 
   getSelections = (payload: any): FindOptionsSelect<T> => {
     const entity: EntityMetadata =
-      this.repository.manager.connection.getMetadata(this.Model);
+      this.repository.manager.connection.getMetadata(this.Entity);
     return payload.rest ? select(payload.fields, entity) : null;
   };
   getRelations = (payload: any): FindOptionsRelations<T> => {
     const entity: EntityMetadata =
-      this.repository.manager.connection.getMetadata(this.Model);
+      this.repository.manager.connection.getMetadata(this.Entity);
     return payload.rest ? relations(payload.fields, entity) : [];
   };
 
