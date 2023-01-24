@@ -48,7 +48,6 @@ export class ChannelController {
     @Body() payload: ChannelDTO,
     @Query() query: any,
     @Res() res: any,
-    @Req() req: any,
     @Param() param: any,
   ): Promise<Channel | ErrorResponse> {
     const channel = await this.service.getOne({

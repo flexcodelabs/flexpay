@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsArray, IsIn, IsNotEmpty, ValidateNested } from 'class-validator';
-import { ChannelValue, Metadata } from '..';
+import { ChannelKey, Metadata } from '..';
 
 export class ChannelDTO {
   @IsNotEmpty({ message: 'Name can not be emtpy' })
@@ -9,7 +9,7 @@ export class ChannelDTO {
 
   @IsNotEmpty({ message: 'Channel must have properties' })
   @IsArray()
-  properties: ChannelValue[];
+  keys: ChannelKey[];
 }
 export class CoreChannelDTO {
   @IsNotEmpty({ message: 'Name can not be emtpy' })

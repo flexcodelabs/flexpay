@@ -7,4 +7,7 @@ export class NameEntity extends DateEntity {
 
   @Column({ unique: true, nullable: true })
   code: string;
+
+  @Column({ unique: true, nullable: true })
+  description: string;
 }

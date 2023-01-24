@@ -1,7 +1,7 @@
 import {
   ApiKey,
   Channel,
-  ChannelValue,
+  ChannelKey,
   CoreChannel,
   Metadata,
   User,
@@ -12,6 +12,6 @@ export const authEntities = [
   ApiKey,
   Channel,
   Metadata,
-  ChannelValue,
+  ChannelKey,
   CoreChannel,
 ];

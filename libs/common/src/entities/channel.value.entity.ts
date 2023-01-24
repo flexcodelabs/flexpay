@@ -9,18 +9,18 @@ import {
 import { Channel, Metadata } from '..';
 import { DateEntity } from './date.entity';
 
-@Entity('channelvalue', { schema: 'public' })
-@Index('unique_channel_value', ['value', 'channel.id', 'metadata.id'], {
+@Entity('channelkey', { schema: 'public' })
+@Index('unique_channel_key', ['value', 'channel.id', 'metadata.id'], {
   unique: true,
 })
-export class ChannelValue extends DateEntity {
+export class ChannelKey extends DateEntity {
   @Column()
   value: string;
 
   @Column({ nullable: false, default: 'FALSE' })
   secret: boolean;
 
-  @ManyToOne(() => Channel, (channel: Channel) => channel.properties, {
+  @ManyToOne(() => Channel, (channel: Channel) => channel.keys, {
     cascade: false,
   })
   @JoinColumn({ name: 'channel', referencedColumnName: 'id' })
