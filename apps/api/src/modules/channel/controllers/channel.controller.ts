@@ -12,6 +12,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -91,12 +92,42 @@ export class ChannelController {
       fields: 'id',
       rest: true,
     });
+    const data = this.service.sanitizeUpdatePayload(
+      payload,
+      channel,
+      req.session.user,
+    ) as ChannelKey;
+
+    return await this.service.addKey(
+      {
+        data,
+        rest: true,
+        fields: query.fields,
+      },
+      res,
+    );
+  }
+  @UseGuards(SessionGuard)
+  @Put(':id/keys')
+  async updateKey(
+    @Body() payload: ChannelKeyDTO,
+    @Query() query: any,
+    @Res() res: any,
+    @Param() param: any,
+  ): Promise<ChannelKey | ErrorResponse> {
+    const channel = await this.service.getOne({
+      id: param.id,
+      fields: 'id',
+      rest: true,
+    });
+    if (!channel.id) {
+      return res.status(HttpStatus.BAD_REQUEST).send(channel);
+    }
+
     return await this.service.addKey(
       {
         data: {
           ...payload,
-          channel,
-          createdBy: req.session.user,
         } as ChannelKey,
         rest: true,
         fields: query.fields,

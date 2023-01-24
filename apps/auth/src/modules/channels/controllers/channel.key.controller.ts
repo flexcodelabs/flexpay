@@ -24,4 +24,14 @@ export class ChannelKeyController {
     this.rmqService.ack(context);
     return channelKey;
   }
+
+  @EventPattern('updateKey')
+  async updateKey(
+    @Payload() payload: CreateEntityInterface,
+    @Ctx() context: RmqContext,
+  ): Promise<ChannelKey | ErrorResponse> {
+    const channelKey = await this.service.create(payload);
+    this.rmqService.ack(context);
+    return channelKey;
+  }
 }

@@ -10,6 +10,7 @@ import {
   GetOneChannel,
   ResponseInterfance,
   sanitizeResponse,
+  User,
 } from '@flexpay/common';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -75,5 +76,15 @@ export class ChannelService {
       }
       return { ...key, createdBy: req.session.user };
     });
+  };
+
+  sanitizeUpdatePayload = (payload: any, entity: any, createdBy: User) => {
+    if (!entity.id) {
+      return entity;
+    }
+    if (!payload.id) {
+      payload.createdBy = createdBy;
+    }
+    return payload;
   };
 }

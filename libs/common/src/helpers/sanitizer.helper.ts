@@ -6,17 +6,17 @@ const sanitizeNullError = (message: string) => {
 };
 
 const sanitizeFinalMessage = (message: string): string => {
-  return message.includes('Could not find any entity of type "User" matching')
+  return message?.includes('Could not find any entity of type "User" matching')
     ? 'User not found'
-    : message.includes('Could not find any entity of type')
+    : message?.includes('Could not find any entity of type')
     ? 'Entity could not be found'
-    : message.includes('channel with name, userid')
+    : message?.includes('channel with name, userid')
     ? 'A channel with a similar name exists.'
-    : message.includes('channelvalue with metadata')
+    : message?.includes('channelvalue with metadata')
     ? 'You have already added the property to the channel'
-    : message.includes('channelkey with metadata')
+    : message?.includes('channelkey with metadata')
     ? 'A similar key already exists on this channel'
-    : message.includes('null value in column')
+    : message?.includes('null value in column')
     ? sanitizeNullError(message)
     : message;
 };
@@ -34,11 +34,11 @@ const messageToUpper = (message: string): string => {
 
 const sanitizeMessage = (message: string) => {
   if (
-    message.includes('Cannot POST') ||
-    message.includes('Cannot GET') ||
-    message.includes('Cannot PATCH') ||
-    message.includes('Cannot DELETE') ||
-    message.includes('Cannot PUT')
+    message?.includes('Cannot POST') ||
+    message?.includes('Cannot GET') ||
+    message?.includes('Cannot PATCH') ||
+    message?.includes('Cannot DELETE') ||
+    message?.includes('Cannot PUT')
   ) {
     message = 'Oops 😢! Route not available.';
   } else {
@@ -74,9 +74,10 @@ export const errorSanitizer = (error: {
       ? error?.response?.message?.join(',')
       : error?.message || error?.error;
   }
-  message = message.split('(').join('');
-  message = message.split(')').join('');
-  message = message.split('=').join(' ');
+
+  message = message?.split('(').join('');
+  message = message?.split(')').join('');
+  message = message?.split('=').join(' ');
 
   message = sanitizeMessage(message);
 

@@ -63,12 +63,14 @@ export const select = (fields: any, metaData: EntityMetadata): any => {
   if (fields === '*') {
     return null;
   }
-  const results = sortFields(fields, metaData);
-  verifyMetadata(
-    fields,
-    results,
-    metaData.relations.map((relation) => relation.propertyPath),
-  );
+  const relations = metaData.relations.map((relation) => relation.propertyPath);
+  const columns = metaData.columns.map((column) => column.propertyName);
+  let results = sortFields(fields, metaData);
+  verifyMetadata(fields, results, relations);
+
+  if (columns.includes('secret')) {
+    results = [...results, 'secret'];
+  }
   return results;
   //{ id: true, metadata: { id: true } };
 };

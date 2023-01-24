@@ -27,9 +27,9 @@ export class HttpErrorFilter implements ExceptionFilter {
       }
     }
 
-    message = message.split('(').join('');
-    message = message.split(')').join('');
-    message = message.split('=').join(' ');
+    message = message?.split('(').join('');
+    message = message?.split(')').join('');
+    message = message?.split('=').join(' ');
 
     message = this.sanitizeMessage(message);
     Logger.error(message, `${request?.method} ${request?.url}`, 'Exception');
@@ -46,21 +46,21 @@ export class HttpErrorFilter implements ExceptionFilter {
 
   sanitizeMessage = (message: string) => {
     if (
-      message.includes('Cannot POST') ||
-      message.includes('Cannot GET') ||
-      message.includes('Cannot PATCH') ||
-      message.includes('Cannot DELETE') ||
-      message.includes('Cannot PUT')
+      message?.includes('Cannot POST') ||
+      message?.includes('Cannot GET') ||
+      message?.includes('Cannot PATCH') ||
+      message?.includes('Cannot DELETE') ||
+      message?.includes('Cannot PUT')
     ) {
       message = 'Oops 😢! Route not available.';
     } else {
-      message = message.includes(
+      message = message?.includes(
         'Could not find any entity of type "User" matching',
       )
         ? 'User not found'
-        : message.includes('Could not find any entity of type "Metadata"')
+        : message?.includes('Could not find any entity of type "Metadata"')
         ? 'Metadata could not be found'
-        : message.includes('null value in column')
+        : message?.includes('null value in column')
         ? this.sanitizeNullError(message)
         : message;
     }
