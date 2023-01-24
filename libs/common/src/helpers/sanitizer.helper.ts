@@ -112,7 +112,7 @@ const sanitizeObject = (responseObject: any) => {
   });
 
   if (newResponseObject.secret) {
-    delete newResponseObject.value;
+    newResponseObject.value = null;
   }
 
   return newResponseObject;
@@ -123,7 +123,7 @@ export const sanitizeResponse: any = (responseObject: any) => {
     return responseObject.map((response) => sanitizeObject(response));
   }
   if (responseObject.secret) {
-    delete responseObject.value;
+    responseObject.value = null;
   }
   return sanitizeObject(responseObject);
 };
