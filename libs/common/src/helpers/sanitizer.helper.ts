@@ -12,6 +12,8 @@ const sanitizeFinalMessage = (message: string): string => {
     ? 'A channel with a similar name exists.'
     : message.includes('channelvalue with metadata')
     ? 'You have already added the property to the channel'
+    : message.includes('channelkey with metadata')
+    ? 'A similar key already exists on this channel'
     : message.includes('null value in column')
     ? sanitizeNullError(message)
     : message;
