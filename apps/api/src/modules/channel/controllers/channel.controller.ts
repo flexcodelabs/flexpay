@@ -1,6 +1,8 @@
 import {
   Channel,
   ChannelDTO,
+  ChannelKey,
+  ChannelKeyDTO,
   CoreChannel,
   CoreChannelDTO,
   ErrorResponse,
@@ -32,6 +34,9 @@ export class ChannelController {
     @Res() res: any,
     @Req() req: any,
   ): Promise<Channel | ErrorResponse> {
+    if (payload.keys) {
+      payload.keys = this.service.sanitizeChannelKeys(payload, req);
+    }
     return await this.service.create(
       {
         data: { ...payload, createdBy: req.session.user } as Channel,
@@ -49,7 +54,11 @@ export class ChannelController {
     @Query() query: any,
     @Res() res: any,
     @Param() param: any,
+    @Req() req: any,
   ): Promise<Channel | ErrorResponse> {
+    if (payload.keys) {
+      payload.keys = this.service.sanitizeChannelKeys(payload, req);
+    }
     const channel = await this.service.getOne({
       id: param.id,
       fields: 'id',
@@ -61,6 +70,34 @@ export class ChannelController {
           ...payload,
           id: channel.id as string,
         } as Channel,
+        rest: true,
+        fields: query.fields,
+      },
+      res,
+    );
+  }
+
+  @UseGuards(SessionGuard)
+  @Post(':id/keys')
+  async addKey(
+    @Body() payload: ChannelKeyDTO,
+    @Query() query: any,
+    @Res() res: any,
+    @Param() param: any,
+    @Req() req: any,
+  ): Promise<ChannelKey | ErrorResponse> {
+    const channel = await this.service.getOne({
+      id: param.id,
+      fields: 'id',
+      rest: true,
+    });
+    return await this.service.addKey(
+      {
+        data: {
+          ...payload,
+          channel,
+          createdBy: req.session.user,
+        } as ChannelKey,
         rest: true,
         fields: query.fields,
       },

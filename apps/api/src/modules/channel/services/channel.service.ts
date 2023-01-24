@@ -1,6 +1,9 @@
 import {
+  AddKeyInterface,
   AUTH_SERVICE,
   Channel,
+  ChannelDTO,
+  ChannelKey,
   CreateChannelInterface,
   CreateCoreChannelInterface,
   ErrorResponse,
@@ -22,6 +25,17 @@ export class ChannelService {
   ): Promise<Channel | ErrorResponse> => {
     const channel = await lastValueFrom(
       this.authClient.send('createChannel', payload),
+    );
+    return res
+      ?.status(channel?.status || HttpStatus.OK)
+      .send(sanitizeResponse(channel));
+  };
+  addKey = async (
+    payload: AddKeyInterface,
+    res: ResponseInterfance,
+  ): Promise<ChannelKey | ErrorResponse> => {
+    const channel = await lastValueFrom(
+      this.authClient.send('addKey', payload),
     );
     return res
       ?.status(channel?.status || HttpStatus.OK)
@@ -52,5 +66,14 @@ export class ChannelService {
           ?.status(channel?.status || HttpStatus.OK)
           .send(sanitizeResponse(channel))
       : channel;
+  };
+
+  sanitizeChannelKeys = (payload: ChannelDTO, req: any) => {
+    return payload.keys.map((key) => {
+      if (key.id) {
+        return key;
+      }
+      return { ...key, createdBy: req.session.user };
+    });
   };
 }

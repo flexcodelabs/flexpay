@@ -6,7 +6,7 @@ import {
   ManyToOne,
   OneToOne,
 } from 'typeorm';
-import { Channel, Metadata } from '..';
+import { Channel, Metadata, User } from '..';
 import { DateEntity } from './date.entity';
 
 @Entity('channelkey', { schema: 'public' })
@@ -32,4 +32,12 @@ export class ChannelKey extends DateEntity {
   })
   @JoinColumn({ name: 'metadata', referencedColumnName: 'id' })
   metadata: Metadata | null;
+
+  @ManyToOne(() => User, {
+    nullable: false,
+    cascade: false,
+    eager: false,
+  })
+  @JoinColumn({ name: 'userid', referencedColumnName: 'id' })
+  createdBy?: User;
 }
