@@ -1,3 +1,5 @@
+import { EntityMetadata } from 'typeorm';
+
 const sanitizeNullError = (message: string) => {
   const column = message.split('"');
   return `${column[1]} can not be null`;
@@ -45,6 +47,12 @@ const sanitizeMessage = (message: string) => {
   message = messageToUpper(message);
   return message;
 };
+
+const sortFields = (fields: string[], metaData: EntityMetadata) => {
+  const columns = metaData.columns.map((column) => column.propertyName);
+  return fields.filter((item: string) => !columns.includes(item));
+};
+
 export const errorSanitizer = (error: {
   detail: string;
   table: string;
@@ -128,4 +136,9 @@ export const sanitizeResponse: any = (responseObject: any) => {
     responseObject.value = null;
   }
   return sanitizeObject(responseObject);
+};
+
+export const sanitizeRequest = (entity: EntityMetadata, keys: string[]) => {
+  const fields = sortFields(keys, entity);
+  return fields;
 };

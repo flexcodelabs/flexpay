@@ -24,8 +24,10 @@ const verifyFields = (fields: any) => {
   if (!fields) {
     throw new BadRequestException('Missing selectors');
   }
-  if (Array.isArray(fields)) {
-    throw new Error('[Fields] Expected a string but received an array.');
+  if (typeof fields !== 'string') {
+    throw new Error(
+      `[Fields] Expected a string but received an ${typeof fields}.`,
+    );
   }
 };
 const verifyMetadata = (
@@ -42,7 +44,11 @@ const verifyMetadata = (
         !field.includes('.'),
     );
   if (extraMetadata.length > 0) {
-    throw new BadRequestException('Additional selectors are not permitted');
+    throw new BadRequestException(
+      `${extraMetadata.join(',')} ${
+        extraMetadata.length > 1 ? 'are' : 'is'
+      } not part of the object requested.`,
+    );
   }
   return;
 };
