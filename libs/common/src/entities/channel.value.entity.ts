@@ -17,6 +17,9 @@ export class ChannelValue extends DateEntity {
   @Column()
   value: string;
 
+  @Column({ nullable: false, default: 'FALSE' })
+  secret: boolean;
+
   @ManyToOne(() => Channel, (channel: Channel) => channel.properties, {
     cascade: false,
   })

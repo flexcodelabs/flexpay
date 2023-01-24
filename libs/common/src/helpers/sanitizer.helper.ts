@@ -84,9 +84,7 @@ const sanitizeObject = (responseObject: any) => {
   };
 
   const newResponseObject: Record<string, unknown> = {};
-  const attributeKeys = Object.keys(
-    omit(responseObject, ['password', 'salt', 'secret']),
-  );
+  const attributeKeys = Object.keys(omit(responseObject, ['password', 'salt']));
   attributeKeys.forEach((attributeKey) => {
     let attributeValue: string | boolean | number | any;
     if (responseObject[attributeKey] === false) {
@@ -113,12 +111,19 @@ const sanitizeObject = (responseObject: any) => {
     }
   });
 
+  if (newResponseObject.secret) {
+    delete newResponseObject.value;
+  }
+
   return newResponseObject;
 };
 
 export const sanitizeResponse: any = (responseObject: any) => {
   if (Array.isArray(responseObject)) {
     return responseObject.map((response) => sanitizeObject(response));
+  }
+  if (responseObject.secret) {
+    delete responseObject.value;
   }
   return sanitizeObject(responseObject);
 };
