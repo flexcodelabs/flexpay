@@ -1,7 +1,12 @@
-import { ChannelDTO, CoreChannelDTO } from '..';
+import { ChannelDTO, ChannelKeyDTO, CoreChannelDTO } from '..';
 
 export interface CreateChannelInterface {
   data: ChannelDTO;
+  fields: string;
+  rest: boolean;
+}
+export interface AddKeyInterface {
+  data: ChannelKeyDTO;
   fields: string;
   rest: boolean;
 }
