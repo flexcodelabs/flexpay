@@ -78,12 +78,12 @@ export class ChannelService {
     });
   };
 
-  sanitizeUpdatePayload = (payload: any, entity: any, createdBy: User) => {
-    if (!entity.id) {
-      return entity;
+  sanitizeUpdatePayload = (payload: any, channel: any, createdBy: User) => {
+    if (!channel.id) {
+      return channel;
     }
     if (!payload.id) {
-      payload.createdBy = createdBy;
+      payload = { ...payload, createdBy, channel };
     }
     return payload;
   };
