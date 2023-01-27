@@ -92,6 +92,9 @@ export class ChannelController {
       fields: 'id',
       rest: true,
     });
+    if (channel.status) {
+      return res.status(channel.status || HttpStatus.BAD_REQUEST).send(channel);
+    }
     const data = this.service.sanitizeUpdatePayload(
       payload,
       channel,
