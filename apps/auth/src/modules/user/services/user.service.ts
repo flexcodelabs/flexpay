@@ -116,7 +116,7 @@ export class UserService {
         this.getSelections(payload, this.repository),
       );
     } catch (e) {
-      return { error: e.message, status: HttpStatus.BAD_REQUEST };
+      return { error: errorSanitizer(e), status: HttpStatus.BAD_REQUEST };
     }
   };
 
@@ -130,7 +130,7 @@ export class UserService {
         select: selections,
       });
     } catch (e) {
-      return { error: e.message, status: 400 };
+      return { error: errorSanitizer(e), status: 400 };
     }
   };
 

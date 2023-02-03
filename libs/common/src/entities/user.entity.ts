@@ -1,20 +1,11 @@
 import * as bcrypt from 'bcrypt';
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import { Metadata } from '..';
 import { Channel } from './channel.entity';
 import { DateEntity } from './date.entity';
 
 @Entity('user', { schema: 'public' })
 export class User extends DateEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
   @Column({ name: 'firstname', nullable: false })
   firstName: string;
 

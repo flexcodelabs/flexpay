@@ -5,11 +5,17 @@ const sanitizeNullError = (message: string) => {
   return `${column[1]} can not be null`;
 };
 
+const notFoundError = (message: string): string => {
+  let e: string | string[] = message.split(
+    'Could not find any entity of type ',
+  );
+  e = e.at(1).split('"');
+  return `${e.at(1)} not found!`;
+};
+
 const sanitizeFinalMessage = (message: string): string => {
-  return message?.includes('Could not find any entity of type "User" matching')
-    ? 'User not found'
-    : message?.includes('Could not find any entity of type')
-    ? 'Entity could not be found'
+  return message?.includes('Could not find any entity of type')
+    ? notFoundError(message)
     : message?.includes('channel with name, userid')
     ? 'A channel with a similar name exists.'
     : message?.includes('channelvalue with metadata')
