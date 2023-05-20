@@ -15,6 +15,7 @@ const sortFields = (fields: string, metaData: EntityMetadata) => {
 
 const getRelations = (fields: string[], metaData: EntityMetadata): string[] => {
   const relations = metaData.relations.map((relation) => relation.propertyPath);
+  if (fields.length === 1 && fields.includes('*')) return relations;
   const relation = fields.filter(
     (field) => relations.includes(field) || field.includes('.'),
   );
@@ -22,7 +23,7 @@ const getRelations = (fields: string[], metaData: EntityMetadata): string[] => {
 };
 const verifyFields = (fields: any) => {
   if (!fields) {
-    throw new BadRequestException('Missing selectors');
+    throw new BadRequestException('Missing return fields');
   }
   if (typeof fields !== 'string') {
     throw new Error(

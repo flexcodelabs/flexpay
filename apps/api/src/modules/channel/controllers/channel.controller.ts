@@ -143,7 +143,6 @@ export class ChannelController {
   async getChannel(
     @Query() query: any,
     @Res() res: any,
-    @Req() req: any,
     @Param() param: any,
   ): Promise<Channel | ErrorResponse> {
     return await this.service.getOne(

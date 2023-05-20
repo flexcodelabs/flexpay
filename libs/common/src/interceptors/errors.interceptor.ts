@@ -16,7 +16,7 @@ export class HttpErrorFilter implements ExceptionFilter {
     if (typeof exception === 'string') {
       message = exception;
     } else {
-      const detail = exception.detail;
+      const detail = exception?.detail;
       if (typeof detail === 'string' && detail?.includes('already exists')) {
         message = exception.table.split('_').join(' ') + ' with';
         message = exception.detail.replace('Key', message);

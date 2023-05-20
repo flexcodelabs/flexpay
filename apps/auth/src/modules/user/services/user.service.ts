@@ -8,6 +8,7 @@ import {
   id,
   LoginInterface,
   RegisterMSDTO,
+  relations,
   sanitizeResponse,
   select,
   UpdateUserMSDTO,
@@ -15,7 +16,7 @@ import {
 } from '@flexpay/common';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsRelations, Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -33,6 +34,7 @@ export class UserService {
       return await this.repository.findOne({
         where: { id: newUser.id },
         select: selections,
+        relations: this.getRelations(payload),
       });
     } catch (e) {
       return { status: HttpStatus.BAD_REQUEST, error: errorSanitizer(e) };
@@ -63,6 +65,12 @@ export class UserService {
 
   getSelections = (payload: any, repository: Repository<any>) => {
     return payload.rest ? select(payload.fields, repository.metadata) : null;
+  };
+
+  private getRelations = (payload: any): FindOptionsRelations<User> => {
+    return payload.rest
+      ? relations(payload.fields, this.repository.metadata)
+      : [];
   };
 
   getCurrentKey = async (createdBy: string) => {
@@ -102,6 +110,7 @@ export class UserService {
     try {
       const users = await this.repository.find({
         select: this.getSelections(payload, this.repository),
+        relations: this.getRelations(payload),
       });
       return { users };
     } catch (e) {
@@ -128,6 +137,7 @@ export class UserService {
       return await this.repository.findOneOrFail({
         where: { id: payload.id },
         select: selections,
+        relations: this.getRelations(payload),
       });
     } catch (e) {
       return { error: errorSanitizer(e), status: 400 };

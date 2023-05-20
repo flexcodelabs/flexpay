@@ -13,7 +13,12 @@ async function bootstrap() {
   });
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalFilters(new HttpErrorFilter());
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      forbidUnknownValues: false,
+    }),
+  );
   app.disable('x-powered-by');
   app.use(
     session({
