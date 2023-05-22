@@ -28,3 +28,4 @@ export * from './interfaces/channel.interface';
 export * from './auth/services/auth.service';
 export * from './dto/shared.dto';
 export * from './constants/entity.names.constants';
+export * from './interfaces/mno.interface';
