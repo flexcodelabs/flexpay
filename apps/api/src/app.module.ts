@@ -22,7 +22,7 @@ import { ChannelModule } from './modules/channel/channel.module';
       isGlobal: true,
       validationSchema: Joi.object({
         RABBIT_MQ_URI: Joi.string().required(),
-        RABBIT_MQ_MPESA_QUEUE: Joi.string().required(),
+        RABBIT_MQ_MNO_QUEUE: Joi.string().required(),
         CHANNELS: Joi.string().required(),
       }),
     }),

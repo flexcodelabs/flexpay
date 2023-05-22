@@ -8,10 +8,10 @@ services:
     command: npm run start:dev api
 
     env_file:
-      - ./.env
+      - ./apps/api/.env
     volumes:
-      - .:/home/app
-      - /home/app/node_modules
+      - .:/app
+      - /app/node_modules
     ports:
       - '2000:1000'
 
@@ -27,14 +27,24 @@ services:
     env_file:
       - ./.env
     volumes:
-      - .:/home/app
-      - /home/app/node_modules
-
+      - .:/app
+      - /app/node_modules
     restart: always
 
-  rabbitmq:
-    image: rabbitmq
+  mno:
+    build:
+      context: .
+      dockerfile: ./apps/mno/Dockerfile
+      target: development
+    command: npm run start:dev mno
+    env_file:
+      - ./.env
+    volumes:
+      - .:/app
+      - /app/node_modules
     restart: always
+    ports:
+      - 2001:2000
 
 volumes:
   postdb-data:

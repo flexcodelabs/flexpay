@@ -17,17 +17,10 @@ export class LoggingInterceptor implements NestInterceptor {
     return call$.handle().pipe(
       tap(async () => {
         const now = Date.now();
-        if (request.method === 'POST' || 'PUT' || 'DELETE') {
-          Logger.debug(
-            `${request.method} ${request.url} ${Date.now() - now}ms`,
-            context.getClass().name,
-          );
-        } else {
-          Logger.log(
-            `${request.method} ${request.url} ${Date.now() - now}ms`,
-            context.getClass().name,
-          );
-        }
+        Logger.log(
+          `${request.method} ${request.url} ${Date.now() - now}ms`,
+          context.getClass().name,
+        );
       }),
     );
   }

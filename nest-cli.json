@@ -63,13 +63,13 @@
         "tsConfigPath": "apps/airtel/tsconfig.app.json"
       }
     },
-    "azampay": {
+    "mno": {
       "type": "application",
-      "root": "apps/azampay",
+      "root": "apps/mno",
       "entryFile": "main",
-      "sourceRoot": "apps/azampay/src",
+      "sourceRoot": "apps/mno/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/azampay/tsconfig.app.json"
+        "tsConfigPath": "apps/mno/tsconfig.app.json"
       }
     },
     "dpo": {

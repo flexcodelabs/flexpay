@@ -5,7 +5,7 @@ RUN npm i  --legacy-peer-deps
 
 FROM development as build
 WORKDIR /app
-RUN app=api npm run package
+RUN app=mnos npm run package
 
 FROM node:lts-alpine3.16 as release
 ENV NODE_ENV production

@@ -18,6 +18,7 @@ export * from './dto/metadata.dto';
 export * from './interfaces/shared.interface';
 export * from './interfaces/user.interface';
 export * from './helpers/sanitizer.helper';
+export * from './helpers/config.helper';
 export * from './auth/guards/session.guard';
 export * from './helpers/id.helper';
 export * from './interfaces/metadata.interface';

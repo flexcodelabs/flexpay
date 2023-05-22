@@ -20,7 +20,7 @@ import { UserModule } from './modules/user/user.module';
       isGlobal: true,
       validationSchema: Joi.object({
         RABBIT_MQ_URI: Joi.string().required(),
-        RABBIT_MQ_MPESA_QUEUE: Joi.string().required(),
+        RABBIT_MQ_MNO_QUEUE: Joi.string().required(),
         AUTH: Joi.string().required(),
       }),
     }),
