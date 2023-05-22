@@ -1,4 +1,4 @@
-name: DEPLOY(PEOM)
+name: DEPLOY(MNO)
 
 on:
   pull_request:

@@ -16,5 +16,5 @@ jobs:
         uses: BaharaJr/create-pr@0.0.1
         with:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
-          DESTINATION_BRANCH: main
+          DESTINATION_BRANCH: mno
           KEYWORD: mno
