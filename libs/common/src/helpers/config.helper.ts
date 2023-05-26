@@ -1,51 +1,62 @@
+import { readFileSync } from 'fs';
+
+const jsonData = readFileSync(__dirname + '/config.json', 'utf8');
+let data;
+if (jsonData?.length > 0) {
+  data = JSON.parse(jsonData);
+} else {
+  data = {};
+}
 export const APPENV = {
   /**
    * Expose over rest API
    */
-  ALLOW_REST: process.env.ALLOW_REST,
+  ALLOW_REST: process.env.ALLOW_REST ?? data.ALLOW_REST,
 
   /**
    * Expose over rest Microservice
    */
-  ALLOW_MS: process.env.ALLOW_MS,
+  ALLOW_MS: process.env.ALLOW_MS ?? data.ALLOW_MS,
 
   /**
    * Expose over Rest Port
    */
-  PORT: process.env.PORT ?? 3001,
+  PORT: process.env.PORT ?? data.PORT ?? 3001,
 
   /**
    * Save results
    */
-  SAVE_RESULTS: process.env.SAVE_RESULTS,
+  SAVE_RESULTS: process.env.SAVE_RESULTS ?? data.SAVE_RESULTS,
 
   /**
    * MNO service name
    */
-  MS_SERVICE_NAME: process.env.MS_SERVICE_NAME ?? 'MNO',
+  MS_SERVICE_NAME: process.env.MS_SERVICE_NAME ?? data.MS_SERVICE_NAME ?? 'MNO',
 
   /**
    * Azam Pay Environment SANDBOX | LIVE
    */
-  AZAMPAY_ENV: process.env.AZAMPAY_ENV as 'SANDBOX' | 'LIVE',
+  AZAMPAY_ENV: (process.env.AZAMPAY_ENV ?? data.AZAMPAY_ENV) as
+    | 'SANDBOX'
+    | 'LIVE',
 
   /**
    * Azam Pay Client Id
    */
-  AZAMPAY_CLIENTID: process.env.AZAMPAY_CLIENTID,
+  AZAMPAY_CLIENTID: process.env.AZAMPAY_CLIENTID ?? data.AZAMPAY_CLIENTID,
 
   /**
    * Azam Pay App Name
    */
-  AZAMPAY_APPNAME: process.env.AZAMPAY_APPNAME,
+  AZAMPAY_APPNAME: process.env.AZAMPAY_APPNAME ?? data.AZAMPAY_APPNAME,
 
   /**
    * Azam Pay App Name
    */
-  AZAMPAY_SECRET: process.env.AZAMPAY_SECRET,
+  AZAMPAY_SECRET: process.env.AZAMPAY_SECRET ?? data.AZAMPAY_SECRET,
 
   /**
    * Azam Pay App Name
    */
-  AZAMPAY_APIKEY: process.env.AZAMPAY_APIKEY,
+  AZAMPAY_APIKEY: process.env.AZAMPAY_APIKEY ?? data.AZAMPAY_APIKEY,
 };
