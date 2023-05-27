@@ -1,12 +1,16 @@
 import { readFileSync } from 'fs';
 
-const jsonData = readFileSync(__dirname + '/config.json', 'utf8');
-let data;
-if (jsonData?.length > 0) {
-  data = JSON.parse(jsonData);
-} else {
-  data = {};
-}
+const config = () => {
+  try {
+    const jsonData = readFileSync('./config.json', 'utf8');
+    return JSON.parse(jsonData);
+  } catch (e) {
+    return {};
+  }
+};
+
+const data = config();
+
 export const APPENV = {
   /**
    * Expose over rest API
