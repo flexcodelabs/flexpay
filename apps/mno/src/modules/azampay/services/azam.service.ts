@@ -6,7 +6,7 @@ import {
   RestPostCheckout,
   RestTransactionStatus,
 } from '@flexpay/common';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import azampay from 'azampay';
 import {
   BankCheckout,
@@ -17,6 +17,7 @@ import {
   NameLookupResponse,
   PartnersResponse,
   PostCheckOutInterface,
+  TokenResponse,
   TransactionStatusResponse,
 } from 'azampay/lib/shared/interfaces/base.interface';
 
@@ -34,10 +35,7 @@ export class AzamService {
   ): Promise<CheckoutResponse | ErrorResponse> => {
     const token = await azampay.getToken(this.getTokenPayload());
     if (token.success) {
-      return await token.mnoCheckout(
-        payload.checkout as MnoCheckout,
-        payload.options,
-      );
+      return await this.getMnoCheckout(payload, token);
     }
     return token as ErrorResponse;
   };
@@ -46,10 +44,7 @@ export class AzamService {
   ): Promise<CheckoutResponse | ErrorResponse> => {
     const token = await azampay.getToken(this.getTokenPayload());
     if (token.success) {
-      return await token.bankCheckout(
-        payload.checkout as BankCheckout,
-        payload.options,
-      );
+      return await this.getBankCheckout(payload, token);
     }
     return token as ErrorResponse;
   };
@@ -97,6 +92,41 @@ export class AzamService {
       )) as PostCheckOutInterface;
     }
     return token as ErrorResponse;
+  };
+
+  private getBankCheckout = async (
+    payload: RestCheckout,
+    token: TokenResponse | ErrorResponse,
+  ) => {
+    const bankCheckout = await token.bankCheckout(
+      payload.checkout as BankCheckout,
+      payload.options,
+    );
+    if (bankCheckout.success && bankCheckout?.transactionId?.length > 4) {
+      return bankCheckout;
+    }
+    return {
+      ...bankCheckout,
+      statusCode: HttpStatus.BAD_REQUEST,
+      status: HttpStatus.BAD_REQUEST,
+    };
+  };
+  private getMnoCheckout = async (
+    payload: RestCheckout,
+    token: TokenResponse | ErrorResponse,
+  ) => {
+    const bankCheckout = await token.mnoCheckout(
+      payload.checkout as MnoCheckout,
+      payload.options,
+    );
+    if (bankCheckout.success && bankCheckout?.transactionId?.length > 4) {
+      return bankCheckout;
+    }
+    return {
+      ...bankCheckout,
+      statusCode: HttpStatus.BAD_REQUEST,
+      status: HttpStatus.BAD_REQUEST,
+    };
   };
 
   private getTokenPayload = () => {
