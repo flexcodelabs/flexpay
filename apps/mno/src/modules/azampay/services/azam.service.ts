@@ -34,6 +34,7 @@ export class AzamService {
     payload: RestCheckout,
   ): Promise<CheckoutResponse | ErrorResponse> => {
     const token = await azampay.getToken(this.getTokenPayload());
+    console.log(token);
     if (token.success) {
       return await this.getMnoCheckout(payload, token);
     }
