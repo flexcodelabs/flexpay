@@ -120,10 +120,7 @@ export class AzamService {
       payload.checkout as MnoCheckout,
       payload.options,
     );
-    Logger.debug(
-      `MNO CHECKOUT ${mnoCheckout.msg ?? mnoCheckout.message}`,
-      'MNO CHECKOUT',
-    );
+    console.log(mnoCheckout);
     if (mnoCheckout.success) {
       return mnoCheckout;
     }
