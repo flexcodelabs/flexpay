@@ -6,7 +6,7 @@ import {
   RestPostCheckout,
   RestTransactionStatus,
 } from '@flexpay/common';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import azampay from 'azampay';
 import {
   BankCheckout,
@@ -24,7 +24,7 @@ import {
 @Injectable()
 export class AzamService {
   partners = async (): Promise<PartnersResponse | ErrorResponse> => {
-    const token = await azampay.getToken(this.getTokenPayload());
+    const token = await azampay.getToken(this.getTokenPayload);
     if (token.success) {
       return (await token.partners()) as PartnersResponse | ErrorResponse;
     }
@@ -33,8 +33,8 @@ export class AzamService {
   mnoCheckout = async (
     payload: RestCheckout,
   ): Promise<CheckoutResponse | ErrorResponse> => {
-    const token = await azampay.getToken(this.getTokenPayload());
-    console.log(token);
+    const token = await azampay.getToken(this.getTokenPayload);
+    Logger.debug(`REQUESTING CHECKOUT VIA [${this.getTokenPayload.env}]`);
     if (token.success) {
       return await this.getMnoCheckout(payload, token);
     }
@@ -43,7 +43,7 @@ export class AzamService {
   bankCheckout = async (
     payload: RestCheckout,
   ): Promise<CheckoutResponse | ErrorResponse> => {
-    const token = await azampay.getToken(this.getTokenPayload());
+    const token = await azampay.getToken(this.getTokenPayload);
     if (token.success) {
       return await this.getBankCheckout(payload, token);
     }
@@ -53,7 +53,7 @@ export class AzamService {
   disbursement = async (
     payload: RestDisbursement,
   ): Promise<DisburseResponse | ErrorResponse> => {
-    const token = await azampay.getToken(this.getTokenPayload());
+    const token = await azampay.getToken(this.getTokenPayload);
     if (token.success) {
       return await token.disburse(payload.disbursement, payload.options);
     }
@@ -63,7 +63,7 @@ export class AzamService {
   nameLookup = async (
     payload: RestNameLookup,
   ): Promise<NameLookupResponse | ErrorResponse> => {
-    const token = await azampay.getToken(this.getTokenPayload());
+    const token = await azampay.getToken(this.getTokenPayload);
     if (token.success) {
       return await token.nameLookup(payload.nameLookup, payload.options);
     }
@@ -72,7 +72,7 @@ export class AzamService {
   transactionStatus = async (
     payload: RestTransactionStatus,
   ): Promise<TransactionStatusResponse | ErrorResponse> => {
-    const token = await azampay.getToken(this.getTokenPayload());
+    const token = await azampay.getToken(this.getTokenPayload);
     if (token.success) {
       return await token.transactionStatus(
         payload.transactionStatus,
@@ -85,7 +85,7 @@ export class AzamService {
   postCheckout = async (
     payload: RestPostCheckout,
   ): Promise<PostCheckOutInterface | ErrorResponse> => {
-    const token = await azampay.getToken(this.getTokenPayload());
+    const token = await azampay.getToken(this.getTokenPayload);
     if (token.success) {
       return (await token.postCheckout(
         payload.postCheckout,
@@ -130,7 +130,7 @@ export class AzamService {
     };
   };
 
-  private getTokenPayload = () => {
+  get getTokenPayload() {
     return {
       env: APPENV.AZAMPAY_ENV,
       clientId: APPENV.AZAMPAY_CLIENTID,
@@ -138,5 +138,5 @@ export class AzamService {
       apiKey: APPENV.AZAMPAY_APIKEY,
       clientSecret: APPENV.AZAMPAY_SECRET,
     };
-  };
+  }
 }
