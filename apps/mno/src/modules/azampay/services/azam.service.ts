@@ -116,15 +116,19 @@ export class AzamService {
     payload: RestCheckout,
     token: TokenResponse | ErrorResponse,
   ) => {
-    const bankCheckout = await token.mnoCheckout(
+    const mnoCheckout = await token.mnoCheckout(
       payload.checkout as MnoCheckout,
       payload.options,
     );
-    if (bankCheckout.success && bankCheckout?.transactionId?.length > 4) {
-      return bankCheckout;
+    Logger.debug(
+      `MNO CHECKOUT ${mnoCheckout.msg ?? mnoCheckout.message}`,
+      'MNO CHECKOUT',
+    );
+    if (mnoCheckout.success) {
+      return mnoCheckout;
     }
     return {
-      ...bankCheckout,
+      ...mnoCheckout,
       statusCode: HttpStatus.BAD_REQUEST,
       status: HttpStatus.BAD_REQUEST,
     };
