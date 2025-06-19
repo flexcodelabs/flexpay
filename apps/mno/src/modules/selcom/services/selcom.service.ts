@@ -5,7 +5,7 @@ import {
   MnoCheckout,
   ErrorResponse,
 } from 'azampay/lib/shared/interfaces/base.interface';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 // Types
 type SelcomPayload = Record<string, string>;
