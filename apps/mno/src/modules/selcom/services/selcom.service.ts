@@ -81,7 +81,7 @@ export class SelcomService {
     const apiKey = APPENV.SELCOM_APIKEY;
     const apiSecret = APPENV.SELCOM_APISECRET;
 
-    const url = `${APPENV.SELCOM_APIURL}/wallet-payment`;
+    const url = `${APPENV.SELCOM_APIURL}/wallet/pushussd`;
 
     const payload: SelcomPayload = {
       utilityref: value,
