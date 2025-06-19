@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { MPesaModule } from './modules/mpesa/mpesa.module';
 import { AzamModule } from './modules/azampay/azampay.module';
+import { SelcomModule } from './modules/selcom/selcom.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AzamModule } from './modules/azampay/azampay.module';
     ConfigModule.forRoot(),
     MPesaModule,
     AzamModule,
+    SelcomModule,
   ].filter((module) => module),
   controllers: [MnoController],
   providers: [{ provide: APP_FILTER, useClass: HttpErrorFilter }, RmqService],
