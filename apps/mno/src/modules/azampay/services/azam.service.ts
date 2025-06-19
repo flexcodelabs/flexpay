@@ -36,7 +36,7 @@ export class AzamService {
     const token = await azampay.getToken(this.getTokenPayload);
     Logger.debug(`REQUESTING CHECKOUT VIA [${this.getTokenPayload.env}]`);
     if (token.success) {
-      return await this.getMnoCheckout(payload, token);
+      return (await this.getMnoCheckout(payload, token)) as CheckoutResponse;
     }
     return token as ErrorResponse;
   };
@@ -120,12 +120,20 @@ export class AzamService {
       payload.checkout as MnoCheckout,
       payload.options,
     );
-    console.log(mnoCheckout);
-    if (mnoCheckout.success) {
+    if (mnoCheckout?.success) {
+      Logger.debug(
+        `MNO CHECKOUT SUCCESSFULL: ${mnoCheckout.message ?? mnoCheckout.msg}`,
+        'MNO CHECKOUT',
+      );
       return mnoCheckout;
     }
+    Logger.debug(
+      `MNO CHECKOUT FAILED: ${mnoCheckout?.message ?? mnoCheckout?.msg}`,
+      'MNO CHECKOUT',
+    );
+    console.log(mnoCheckout);
     return {
-      ...mnoCheckout,
+      ...(mnoCheckout ?? {}),
       statusCode: HttpStatus.BAD_REQUEST,
       status: HttpStatus.BAD_REQUEST,
     };

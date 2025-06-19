@@ -51,4 +51,24 @@ export const APPENV = {
    * Azam Pay App Name
    */
   AZAMPAY_APIKEY: process.env.AZAMPAY_APIKEY,
+
+  /**
+   * Selcom vendor
+   */
+  SELCOM_VENDOR: process.env.SELCOM_VENDOR,
+
+  /**
+   * Selcom API Key
+   */
+  SELCOM_APIKEY: process.env.SELCOM_APIKEY,
+
+  /**
+   * Selcom API URL
+   */
+  SELCOM_APIURL: process.env.SELCOM_APIURL,
+
+  /**
+   * Selcom API Secret
+   */
+  SELCOM_APISECRET: process.env.SELCOM_APISECRET,
 };

@@ -29,3 +29,4 @@ export * from './auth/services/auth.service';
 export * from './dto/shared.dto';
 export * from './constants/entity.names.constants';
 export * from './interfaces/mno.interface';
+export * from './helpers/base.helper';
