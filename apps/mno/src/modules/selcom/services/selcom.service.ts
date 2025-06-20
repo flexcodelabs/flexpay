@@ -109,7 +109,7 @@ export class SelcomService {
       'Signed-Fields': signedFields,
     };
     const result = await this.sendSelcomRequest(url, payload, headers);
-    console.log(JSON.stringify(result, null, 2));
+    console.log(JSON.stringify(result));
     return result;
   };
 }
