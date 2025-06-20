@@ -13,7 +13,7 @@ import {
   NameLookupResponse,
   PartnersResponse,
   TransactionStatusResponse,
-} from 'azampay/lib/shared/interfaces/base.interface';
+} from 'azampay';
 import { Response } from 'express';
 import { AzamService } from '../services/azam.service';
 

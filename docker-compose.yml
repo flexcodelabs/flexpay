@@ -1,35 +1,35 @@
-version: '3.4'
+# version: '3.4'
 services:
-  api:
-    build:
-      context: .
-      dockerfile: ./apps/api/Dockerfile
-      target: development
-    command: npm run start:dev api
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/api/Dockerfile
+  #     target: development
+  #   command: npm run start:dev api
 
-    env_file:
-      - ./apps/api/.env
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - '2000:1000'
+  #   env_file:
+  #     - ./apps/api/.env
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - '2000:1000'
 
-    restart: always
+  #   restart: always
 
-  auth:
-    build:
-      context: .
-      dockerfile: ./apps/auth/Dockerfile
-      target: development
-    command: npm run start:dev auth
+  # auth:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/auth/Dockerfile
+  #     target: development
+  #   command: npm run start:dev auth
 
-    env_file:
-      - ./.env
-    volumes:
-      - .:/app
-      - /app/node_modules
-    restart: always
+  #   env_file:
+  #     - ./.env
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   restart: always
 
   mno:
     build:
@@ -44,7 +44,7 @@ services:
       - /app/node_modules
     restart: always
     ports:
-      - 2001:2000
+      - 2001:3001
 
 volumes:
   postdb-data:

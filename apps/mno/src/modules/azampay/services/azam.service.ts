@@ -19,7 +19,7 @@ import {
   PostCheckOutInterface,
   TokenResponse,
   TransactionStatusResponse,
-} from 'azampay/lib/shared/interfaces/base.interface';
+} from 'azampay';
 
 @Injectable()
 export class AzamService {

@@ -1,10 +1,6 @@
 import { APPENV, phoneNumber } from '@flexpay/common';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import {
-  CheckoutResponse,
-  MnoCheckout,
-  ErrorResponse,
-} from 'azampay/lib/shared/interfaces/base.interface';
+import { CheckoutResponse, MnoCheckout, ErrorResponse } from 'azampay';
 import * as crypto from 'crypto';
 
 // Types
@@ -65,7 +61,7 @@ export class SelcomService {
   selcomPush = async (
     request: MnoCheckout,
   ): Promise<CheckoutResponse | ErrorResponse> => {
-    const { valid, value, withCode } = phoneNumber(request.accountNumber);
+    const { valid, withCode } = phoneNumber(request.accountNumber);
     if (!valid) {
       return {
         statusCode: HttpStatus.BAD_REQUEST,
@@ -82,14 +78,14 @@ export class SelcomService {
     const url = `${APPENV.SELCOM_APIURL}/checkout/wallet-payment`;
 
     const payload: SelcomPayload = {
-      utilityref: value,
+      utilityref: APPENV.SELCOM_VENDOR,
       transid: request.externalId,
       amount: request.amount,
       vendor: APPENV.SELCOM_VENDOR,
       msisdn: withCode,
     };
 
-    const authorization = Buffer.from(apiKey).toString('hex');
+    const authorization = Buffer.from(apiKey, 'ascii').toString('base64');
     const timestamp = new Date().toISOString();
     const signedFields = Object.keys(payload).join(',');
     const digest = this.computeSignature(

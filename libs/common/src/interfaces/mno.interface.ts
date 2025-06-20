@@ -6,7 +6,7 @@ import {
   PostCheckOut,
   RequestOptions,
   TransactionStatus,
-} from 'azampay/lib/shared/interfaces/base.interface';
+} from 'azampay';
 
 export interface RestCheckout {
   checkout: MnoCheckout | BankCheckout;
