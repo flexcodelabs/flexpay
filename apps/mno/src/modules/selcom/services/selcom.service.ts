@@ -1,5 +1,5 @@
 import { APPENV, phoneNumber } from '@flexpay/common';
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   CheckoutResponse,
   MnoCheckout,
@@ -57,12 +57,9 @@ export class SelcomService {
       body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      const text = await response.text();
-      Logger.debug(`SELCOM Error: ${text}`, 'SELCOM');
-      return { text };
-    }
-    return response.json();
+    const res = await response.json();
+    res.statusCode = response.status;
+    return res;
   };
 
   selcomPush = async (
@@ -112,7 +109,7 @@ export class SelcomService {
       'Signed-Fields': signedFields,
     };
     const result = await this.sendSelcomRequest(url, payload, headers);
-    console.log(JSON.stringify(result, null, 2));
+    console.log(JSON.stringify(result));
     return result;
   };
 }
