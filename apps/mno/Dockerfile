@@ -1,13 +1,14 @@
-FROM node:18-alpine as development
+FROM node:18-alpine AS development
 WORKDIR /app
 COPY . ./
 RUN npm i  --legacy-peer-deps
+RUN npm i azampay  --legacy-peer-deps
 
-FROM development as build
+FROM development AS build
 WORKDIR /app
 RUN app=mnos npm run package
 
-FROM node:lts-alpine3.16 as release
+FROM node:lts-alpine3.16 AS release
 ENV NODE_ENV production
 RUN apk add --no-cache tzdata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

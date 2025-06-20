@@ -1,9 +1,5 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import {
-  CheckoutResponse,
-  ErrorResponse,
-  MnoCheckout,
-} from 'azampay/lib/shared/interfaces/base.interface';
+import { CheckoutResponse, ErrorResponse, MnoCheckout } from 'azampay';
 import { SelcomService } from '../services/selcom.service';
 import { Response } from 'express';
 
