@@ -81,3 +81,16 @@ export interface GetManyReqInterface {
   page: number;
   pageSize: number;
 }
+
+export interface CreateOrder {
+  vendor: string;
+  order_id: string;
+  buyer_email: string;
+  buyer_name: string;
+  buyer_phone: string;
+  amount: number;
+  currency: string;
+  buyer_remarks: string;
+  merchant_remarks: string;
+  no_of_items: number;
+}
