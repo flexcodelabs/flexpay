@@ -112,12 +112,12 @@ export class SelcomService {
       buyer_remarks: 'None',
       merchant_remarks: 'None',
       no_of_items: 1,
+      vendor,
     } as unknown as CreateOrder);
     console.log(JSON.stringify(order));
 
     const url = `${baseUrl}/checkout/wallet-payment`;
     const payload: SelcomPayload = {
-      utilityref: vendor,
       transid: request.externalId,
       amount: request.amount,
       vendor,
