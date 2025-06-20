@@ -1,5 +1,12 @@
 import { FindOptionsRelations, FindOptionsSelect } from 'typeorm';
 
+export interface BaseRequest {
+  resource: string;
+  body?: BodyInit;
+  headers: HeadersInit;
+  method: 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE';
+}
+
 export interface ErrorResponse {
   status: number;
   error: string;

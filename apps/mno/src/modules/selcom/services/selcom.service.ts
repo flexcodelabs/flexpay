@@ -1,4 +1,4 @@
-import { APPENV, phoneNumber } from '@flexpay/common';
+import { APPENV, phoneNumber, requestResource } from '@flexpay/common';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { CheckoutResponse, MnoCheckout, ErrorResponse } from 'azampay';
 import * as crypto from 'crypto';
@@ -47,14 +47,13 @@ export class SelcomService {
     payload: SelcomPayload,
     headers: Headers,
   ): Promise<any> => {
-    const response = await fetch(url, {
-      method: 'POST',
+    const res = await requestResource({
+      resource: url,
       headers,
       body: JSON.stringify(payload),
+      method: 'POST',
     });
-
-    const res = await response.json();
-    res.statusCode = response.status;
+    console.log(res);
     return res;
   };
 
