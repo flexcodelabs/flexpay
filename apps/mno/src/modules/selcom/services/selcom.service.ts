@@ -77,7 +77,7 @@ export class SelcomService {
   createOrder = async (
     payload: CreateOrder,
   ): Promise<CheckoutResponse | ErrorResponse> => {
-    const url = `${baseUrl}/checkout/wallet-payment`;
+    const url = `${baseUrl}/checkout/create-order-minimal`;
     const signedFields = Object.keys(payload).join(',');
     const headers: Headers = this.headers(payload as any, signedFields);
     const result = await this.sendSelcomRequest(url, payload as any, headers);
