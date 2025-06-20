@@ -1,4 +1,9 @@
-import { APPENV, phoneNumber, requestResource } from '@flexpay/common';
+import {
+  APPENV,
+  CreateOrder,
+  phoneNumber,
+  requestResource,
+} from '@flexpay/common';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { CheckoutResponse, MnoCheckout, ErrorResponse } from 'azampay';
 import * as crypto from 'crypto';
@@ -6,6 +11,12 @@ import * as crypto from 'crypto';
 // Types
 type SelcomPayload = Record<string, string>;
 type Headers = Record<string, string>;
+// ======= Config & Execution ======= //
+const apiKey = APPENV.SELCOM_APIKEY;
+const apiSecret = APPENV.SELCOM_APISECRET;
+const baseUrl = APPENV.SELCOM_APIURL;
+const vendor = APPENV.SELCOM_VENDOR;
+const authorization = Buffer.from(apiKey, 'ascii').toString('base64');
 
 @Injectable()
 export class SelcomService {
@@ -57,7 +68,29 @@ export class SelcomService {
     return res;
   };
 
-  selcomPush = async (
+  /**
+   *
+   * @param payload: CreateOrder
+   * @returns CheckoutResponse | ErrorResponse
+   */
+
+  createOrder = async (
+    payload: CreateOrder,
+  ): Promise<CheckoutResponse | ErrorResponse> => {
+    const url = `${baseUrl}/checkout/wallet-payment`;
+    const signedFields = Object.keys(payload).join(',');
+    const headers: Headers = this.headers(payload as any, signedFields);
+    const result = await this.sendSelcomRequest(url, payload as any, headers);
+    console.log(JSON.stringify(result));
+    return result;
+  };
+
+  /**
+   * @param request
+   * @returns CheckoutResponse | ErrorResponse
+   */
+
+  push = async (
     request: MnoCheckout,
   ): Promise<CheckoutResponse | ErrorResponse> => {
     const { valid, withCode } = phoneNumber(request.accountNumber);
@@ -69,32 +102,46 @@ export class SelcomService {
         code: 'FAIL',
       } as unknown as CheckoutResponse | ErrorResponse;
     }
-    // ======= Config & Execution ======= //
-    const apiKey = APPENV.SELCOM_APIKEY;
-    const apiSecret = APPENV.SELCOM_APISECRET;
+    const order = await this.createOrder({
+      order_id: request.externalId,
+      amount: request.amount,
+      buyer_email: 'benny@example.com',
+      buyer_name: 'Benny',
+      buyer_phone: withCode,
+      currency: 'TZS',
+      buyer_remarks: 'None',
+      merchant_remarks: 'None',
+      no_of_items: 1,
+    } as unknown as CreateOrder);
+    console.log(JSON.stringify(order));
 
-    const url = `${APPENV.SELCOM_APIURL}/wallet/pushussd`;
-    // const url = `${APPENV.SELCOM_APIURL}/checkout/wallet-payment`;
-
+    const url = `${baseUrl}/checkout/wallet-payment`;
     const payload: SelcomPayload = {
-      utilityref: APPENV.SELCOM_VENDOR,
+      utilityref: vendor,
       transid: request.externalId,
       amount: request.amount,
-      vendor: APPENV.SELCOM_VENDOR,
+      vendor,
       msisdn: withCode,
+      order_id: request.externalId,
     };
 
-    const authorization = Buffer.from(apiKey, 'ascii').toString('base64');
-    const timestamp = new Date().toISOString();
     const signedFields = Object.keys(payload).join(',');
+    const headers: Headers = this.headers(payload, signedFields);
+    const result = await this.sendSelcomRequest(url, payload, headers);
+    console.log(JSON.stringify(result));
+    return result;
+  };
+
+  headers = (payload: SelcomPayload, signedFields: string): Headers => {
+    const timestamp = new Date().toISOString();
+
     const digest = this.computeSignature(
       payload,
       signedFields,
       timestamp,
       apiSecret,
     );
-
-    const headers: Headers = {
+    return {
       'Content-Type': 'application/json;charset=utf-8',
       Accept: 'application/json',
       'Cache-Control': 'no-cache',
@@ -104,8 +151,5 @@ export class SelcomService {
       Timestamp: timestamp,
       'Signed-Fields': signedFields,
     };
-    const result = await this.sendSelcomRequest(url, payload, headers);
-    console.log(JSON.stringify(result));
-    return result;
   };
 }
