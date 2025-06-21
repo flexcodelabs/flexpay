@@ -5,7 +5,7 @@ import {
   requestResource,
 } from '@flexpay/common';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { CheckoutResponse, MnoCheckout, ErrorResponse } from 'azampay';
+import { CheckoutResponse, ErrorResponse, MnoCheckout } from 'azampay';
 import * as crypto from 'crypto';
 
 // Types
@@ -93,7 +93,7 @@ export class SelcomService {
   push = async (
     request: MnoCheckout,
   ): Promise<CheckoutResponse | ErrorResponse> => {
-    const { valid, withCode } = phoneNumber(request.accountNumber);
+    const { valid, withOutPlus } = phoneNumber(request.accountNumber);
     if (!valid) {
       return {
         statusCode: HttpStatus.BAD_REQUEST,
@@ -105,26 +105,23 @@ export class SelcomService {
     const order = await this.createOrder({
       order_id: request.externalId,
       amount: request.amount,
-      buyer_email: 'benny@example.com',
-      buyer_name: 'Benny',
-      buyer_phone: withCode,
-      currency: 'TZS',
-      buyer_remarks: 'None',
-      merchant_remarks: 'None',
-      no_of_items: 1,
+      buyer_email: request.additionalProperties?.email ?? 'benny@example.com',
+      buyer_name: request.additionalProperties?.name ?? 'Benny',
+      buyer_phone: withOutPlus,
+      currency: request.currency ?? 'TZS',
+      buyer_remarks: request.additionalProperties?.buyer_remarks ?? 'None',
+      merchant_remarks:
+        request.additionalProperties?.merchant_remarks ?? 'None',
+      no_of_items: request.additionalProperties?.items ?? 1,
       vendor,
     } as unknown as CreateOrder);
     console.log(JSON.stringify(order));
-
     const url = `${baseUrl}/checkout/wallet-payment`;
     const payload: SelcomPayload = {
       transid: request.externalId,
-      amount: request.amount,
-      vendor,
-      msisdn: withCode,
+      msisdn: withOutPlus,
       order_id: request.externalId,
     };
-
     const signedFields = Object.keys(payload).join(',');
     const headers: Headers = this.headers(payload, signedFields);
     const result = await this.sendSelcomRequest(url, payload, headers);
