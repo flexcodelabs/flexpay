@@ -114,8 +114,11 @@ export class SelcomService {
         request.additionalProperties?.merchant_remarks ?? 'None',
       no_of_items: request.additionalProperties?.items ?? 1,
       vendor,
+      webhook: request?.additionalProperties?.webhook,
     } as unknown as CreateOrder);
-    console.log(JSON.stringify(order));
+    if (order?.statusCode != 200) {
+      return order;
+    }
     const url = `${baseUrl}/checkout/wallet-payment`;
     const payload: SelcomPayload = {
       transid: request.externalId,
